@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lighting Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <canvas id="canvas"></canvas>
+
+  <!-- ── Always-visible studio HUD (top-right) ──────────────────── -->
+  <div id="hud">
+    <div class="hud-label">Studio</div>
+    <label class="hud-row">
+      <span>Exposure</span>
+      <div class="hud-range">
+        <input type="range" class="slider" id="exposure" min="0.1" max="2" step="0.05" value="0.75">
+        <span class="rval">0.75</span>
+      </div>
+    </label>
+    <label class="hud-row">
+      <span>Ambient</span>
+      <div class="hud-range">
+        <input type="range" class="slider" id="ambient-intensity" min="0" max="1" step="0.01" value="0.06">
+        <span class="rval">0.06</span>
+      </div>
+    </label>
+    <label class="hud-row">
+      <span>Bloom</span>
+      <div class="hud-range">
+        <input type="range" class="slider" id="bloom-strength" min="0" max="2" step="0.05" value="0.20">
+        <span class="rval">0.20</span>
+      </div>
+    </label>
+  </div>
+
+  <!-- ── Light popup panel (left, slides in) ────────────────────── -->
+  <div id="light-panel">
+    <div id="lp-accent-bar"></div>
+
+    <div id="lp-header">
+      <div id="lp-title-wrap">
+        <div id="lp-dot"></div>
+        <div>
+          <div id="lp-name">Key Light</div>
+          <div id="lp-role-badge"></div>
+        </div>
+      </div>
+      <div id="lp-header-btns">
+        <button id="lp-return" class="lp-hbtn">← Return</button>
+        <button id="lp-close"  class="lp-hbtn lp-hbtn-x">×</button>
+      </div>
+    </div>
+
+    <div id="lp-desc"></div>
+
+    <div id="lp-body"></div>
+
+    <div id="lp-physics">
+      <div class="phys-heading">Physics</div>
+      <div class="phys-grid">
+        <div class="phys-cell">
+          <span class="phys-lbl">Shadow</span>
+          <span class="phys-val" id="phys-shadow">—</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Softness</span>
+          <span class="phys-val" id="phys-softness">—</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Falloff</span>
+          <span class="phys-val" id="phys-falloff">1/r²</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Key:Fill</span>
+          <span class="phys-val" id="phys-ratio">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="lp-footer">
+      <button id="lp-toggle" class="lp-btn">Turn OFF</button>
+      <button id="lp-delete" class="lp-btn lp-btn-danger">Delete Light</button>
+    </div>
+  </div>
+
+  <!-- ── Object popup panel (top-left, small) ───────────────────── -->
+  <div id="object-panel">
+    <div id="op-header">
+      <span>Object</span>
+      <button id="op-close">×</button>
+    </div>
+    <div id="op-body">
+      <label class="op-row">
+        <span>Color</span>
+        <input type="color" id="obj-color" value="#cccccc">
+      </label>
+      <label class="op-row">
+        <span>Roughness</span>
+        <div class="op-range">
+          <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5">
+          <span class="rval">0.50</span>
+        </div>
+      </label>
+      <label class="op-row">
+        <span>Metalness</span>
+        <div class="op-range">
+          <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05">
+          <span class="rval">0.05</span>
+        </div>
+      </label>
+      <div class="op-modes">
+        <button data-mode="translate" class="mode-btn active">Move</button>
+        <button data-mode="rotate"    class="mode-btn">Rotate</button>
+        <button data-mode="scale"     class="mode-btn">Scale</button>
+      </div>
+      <button id="delete-selected" class="op-danger">Delete Object</button>
+    </div>
+  </div>
+
+  <!-- ── Bottom toolbar ─────────────────────────────────────────── -->
+  <nav id="toolbar">
+    <div class="tb-section">
+      <span class="tb-label">Add Light</span>
+      <div class="tb-lights">
+        <button class="lt-btn" data-role="key"        style="--lc:#FFD166">
+          <span class="lt-pip"></span>Key Light
+        </button>
+        <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5">
+          <span class="lt-pip"></span>Fill Light
+        </button>
+        <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D">
+          <span class="lt-pip"></span>Back Light
+        </button>
+        <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9">
+          <span class="lt-pip"></span>Hair Light
+        </button>
+        <button class="lt-btn" data-role="background" style="--lc:#B69CF5">
+          <span class="lt-pip"></span>BG Light
+        </button>
+        <button class="lt-btn" data-role="practical"  style="--lc:#FF9947">
+          <span class="lt-pip"></span>Practical
+        </button>
+      </div>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="tb-section">
+      <span class="tb-label">Object</span>
+      <div class="tb-objs">
+        <button class="tb-obj" data-add-object="sphere"   title="Sphere">●</button>
+        <button class="tb-obj" data-add-object="box"      title="Box">■</button>
+        <button class="tb-obj" data-add-object="cylinder" title="Cylinder">▬</button>
+        <button class="tb-obj" data-add-object="cone"     title="Cone">▲</button>
+        <button class="tb-obj" data-add-object="torus"    title="Torus">◎</button>
+      </div>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <div class="tb-section">
+      <span class="tb-label">View</span>
+      <div class="tb-views">
+        <button class="tb-view" data-view="front">Front</button>
+        <button class="tb-view" data-view="side">Side</button>
+        <button class="tb-view" data-view="top">Top</button>
+        <button class="tb-view" data-view="quarter">3/4</button>
+      </div>
+    </div>
+
+    <div class="tb-sep"></div>
+
+    <button id="screenshot-btn" title="Screenshot">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Shot
+    </button>
+  </nav>
+
+  <!-- ── Hints ──────────────────────────────────────────────────── -->
+  <div id="hints">
+    G · Move &nbsp;·&nbsp; R · Rotate &nbsp;·&nbsp; S · Scale &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

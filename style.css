@@ -1,0 +1,671 @@
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Design Tokens ──────────────────────────────────────────────── */
+:root {
+  --bg:         #09090f;
+  --surface:    rgba(14, 12, 26, 0.96);
+  --glass:      rgba(255,255,255,0.04);
+  --border:     rgba(255,255,255,0.07);
+  --border-hi:  rgba(255,255,255,0.14);
+  --text:       #e4e4f0;
+  --muted:      #4e4c68;
+  --muted-hi:   #7a7898;
+  --accent:     #7c6ef5;
+  --accent-hi:  #9d92f8;
+  --danger:     #e05555;
+  --radius-sm:  6px;
+  --radius:     10px;
+  --radius-lg:  16px;
+  --blur:       blur(18px) saturate(1.6);
+  --shadow:     0 8px 32px rgba(0,0,0,0.6);
+  --shadow-sm:  0 2px 12px rgba(0,0,0,0.4);
+  --font:       'Inter', system-ui, sans-serif;
+  --dur:        0.22s;
+  --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Canvas ─────────────────────────────────────────────────────── */
+#canvas {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  touch-action: none;
+}
+
+/* ── HUD (top-right, always visible) ────────────────────────────── */
+#hud {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  width: 220px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow-sm);
+  animation: fadeDown 0.5s var(--ease) both;
+}
+
+.hud-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.hud-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: default;
+}
+.hud-row:last-child { margin-bottom: 0; }
+.hud-row > span { font-size: 11px; color: var(--muted-hi); min-width: 54px; }
+
+.hud-range { display: flex; align-items: center; gap: 6px; flex: 1; }
+.hud-range input[type="range"] { flex: 1; }
+.hud-range .slider { flex: 1; }
+
+/* ── Light Panel (left, slides in) ──────────────────────────────── */
+#light-panel {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  z-index: 20;
+  width: 276px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+#light-panel.lp-open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(-50%) translateX(0);
+}
+
+#lp-accent-bar {
+  height: 3px;
+  background: var(--lt-color, var(--accent));
+  transition: background 0.3s ease;
+}
+
+#lp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 14px 14px 8px;
+  gap: 8px;
+}
+
+#lp-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#lp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lt-color, var(--accent));
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--lt-color, var(--accent));
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+#lp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+#lp-role-badge {
+  font-size: 10px;
+  color: var(--lt-color, var(--accent));
+  font-weight: 500;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.3s;
+}
+
+#lp-header-btns { display: flex; gap: 4px; flex-shrink: 0; }
+
+.lp-hbtn {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--muted-hi);
+  font-size: 11px;
+  font-family: var(--font);
+  padding: 4px 9px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.lp-hbtn:hover { border-color: var(--border-hi); color: var(--text); }
+.lp-hbtn-x { padding: 4px 8px; font-size: 15px; line-height: 1; }
+
+#lp-desc {
+  font-size: 11px;
+  color: var(--muted-hi);
+  line-height: 1.5;
+  padding: 0 14px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Light panel controls ────────────────────────────────────────── */
+#lp-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ctrl-block { display: flex; flex-direction: column; gap: 6px; }
+
+.ctrl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ctrl-header label {
+  font-size: 11px;
+  color: var(--muted-hi);
+  font-weight: 500;
+}
+
+.ctrl-val {
+  font-size: 11px;
+  color: var(--lt-color, var(--accent));
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+/* ── Custom range slider ─────────────────────────────────────────── */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    var(--lt-color, var(--accent)) 0%,
+    var(--lt-color, var(--accent)) var(--pct, 50%),
+    rgba(255,255,255,0.1) var(--pct, 50%),
+    rgba(255,255,255,0.1) 100%
+  );
+  transition: background 0.05s;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 2px 6px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.5);
+}
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ── Kelvin strip (visual temp bar below slider) ─────────────────── */
+.kelvin-strip {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: -2px;
+  background: linear-gradient(to right,
+    #ff6a1a 0%, #ff9137 20%, #ffc07a 40%, #fff3dc 55%,
+    #e8f0ff 70%, #c5d5ff 85%, #aac4ff 100%
+  );
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Physics readout ─────────────────────────────────────────────── */
+#lp-physics {
+  margin: 0 14px 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.phys-heading {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.phys-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.phys-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.phys-lbl { font-size: 10px; color: var(--muted); }
+.phys-val { font-size: 12px; color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* ── Light panel mode row ────────────────────────────────────────── */
+.lp-modes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+.lp-modes .mode-btn {
+  flex: 1;
+  padding: 5px;
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: var(--muted-hi);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.lp-modes .mode-btn:hover  { border-color: var(--lt-color, var(--accent)); color: var(--lt-color, var(--accent)); }
+.lp-modes .mode-btn.active { background: var(--lt-color, var(--accent)); border-color: var(--lt-color, var(--accent)); color: #fff; }
+
+/* ── Light panel footer ──────────────────────────────────────────── */
+#lp-footer {
+  display: flex;
+  gap: 6px;
+  padding: 0 14px 14px;
+}
+
+.lp-btn {
+  flex: 1;
+  padding: 8px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.lp-btn:hover { border-color: var(--border-hi); background: rgba(255,255,255,0.07); }
+.lp-btn-danger { color: var(--danger); border-color: rgba(224,85,85,0.25); }
+.lp-btn-danger:hover { background: rgba(224,85,85,0.12); border-color: var(--danger); }
+
+/* ── Object Panel ────────────────────────────────────────────────── */
+#object-panel {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 20;
+  width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+#object-panel.op-open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+#op-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+}
+#op-close {
+  background: none; border: none; color: var(--muted);
+  font-size: 18px; cursor: pointer; line-height: 1;
+  transition: color 0.12s;
+}
+#op-close:hover { color: var(--text); }
+
+#op-body { padding: 10px 13px 13px; }
+
+.op-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: var(--muted-hi);
+}
+.op-range { display: flex; align-items: center; gap: 5px; flex: 1; }
+.op-range input[type="range"] { flex: 1; accent-color: var(--accent); }
+.op-range .slider { flex: 1; }
+
+input[type="color"] {
+  width: 34px; height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  padding: 1px;
+}
+
+.op-modes {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0 8px;
+}
+.mode-btn {
+  flex: 1;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--muted-hi);
+  padding: 5px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.mode-btn:hover  { border-color: var(--accent); color: var(--accent); }
+.mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.op-danger {
+  width: 100%;
+  padding: 7px;
+  background: none;
+  border: 1px solid rgba(224,85,85,0.25);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  font-size: 12px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.op-danger:hover { background: rgba(224,85,85,0.1); border-color: var(--danger); }
+
+/* ── Toolbar ─────────────────────────────────────────────────────── */
+#toolbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 8px 14px;
+  backdrop-filter: var(--blur);
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: calc(100vw - 40px);
+  animation: fadeUp 0.5s var(--ease) 0.1s both;
+}
+
+/* Hide scrollbar but allow scroll */
+#toolbar::-webkit-scrollbar { display: none; }
+#toolbar { scrollbar-width: none; }
+
+.tb-section { display: flex; align-items: center; gap: 5px; }
+
+.tb-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.tb-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Light type buttons ──────────────────────────────────────────── */
+.lt-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 50px;
+  color: var(--muted-hi);
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--font);
+  padding: 5px 11px 5px 8px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.lt-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--lc);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.lt-btn:hover {
+  border-color: var(--lc);
+  color: var(--lc);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.lt-btn:hover::before { opacity: 0.06; }
+
+.lt-btn:active { transform: translateY(0); }
+
+.lt-pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lc);
+  flex-shrink: 0;
+  box-shadow: 0 0 5px var(--lc);
+}
+
+/* ── Object buttons ──────────────────────────────────────────────── */
+.tb-objs { display: flex; gap: 3px; }
+
+.tb-obj {
+  width: 30px;
+  height: 30px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted-hi);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.14s;
+  display: flex; align-items: center; justify-content: center;
+}
+.tb-obj:hover {
+  border-color: var(--border-hi);
+  color: var(--text);
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+}
+
+/* ── View buttons ────────────────────────────────────────────────── */
+.tb-views { display: flex; gap: 3px; }
+.tb-view {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted-hi);
+  font-size: 11px;
+  font-family: var(--font);
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.tb-view:hover {
+  border-color: var(--border-hi);
+  color: var(--text);
+  background: rgba(255,255,255,0.08);
+}
+
+/* ── Screenshot button ───────────────────────────────────────────── */
+#screenshot-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  padding: 6px 13px;
+  cursor: pointer;
+  transition: all 0.14s;
+  flex-shrink: 0;
+}
+#screenshot-btn:hover {
+  background: var(--accent-hi);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(124,110,245,0.5);
+}
+#screenshot-btn:active { transform: translateY(0); }
+
+/* ── Shared range inputs ─────────────────────────────────────────── */
+.rval {
+  font-size: 10px;
+  color: var(--muted-hi);
+  min-width: 30px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--text);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  transition: transform 0.12s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 12px; border: none; border-radius: 50%; background: var(--text);
+}
+
+/* ── Hints ───────────────────────────────────────────────────────── */
+#hints {
+  position: fixed;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+/* ── Animations ──────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  #hud { display: none; }
+  #hints { display: none; }
+  #light-panel {
+    left: 10px;
+    width: calc(100vw - 20px);
+    top: auto;
+    bottom: 90px;
+    transform: none;
+  }
+  #light-panel.lp-open { transform: none; }
+  #toolbar { bottom: 12px; padding: 7px 10px; }
+  .lt-btn { font-size: 11px; padding: 5px 9px 5px 7px; }
+}
