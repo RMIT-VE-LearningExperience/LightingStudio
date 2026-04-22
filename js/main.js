@@ -7,6 +7,7 @@ import { EffectComposer }    from 'three/examples/jsm/postprocessing/EffectCompo
 import { RenderPass }        from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass }   from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass }        from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { initWelcome }       from './tutorial.js';
 
 // ─── RENDERER ────────────────────────────────────────────────────────────────
 
@@ -644,6 +645,7 @@ function addLight(type, cfg = {}) {
   };
   lights.push(entry);
   applyLightPhysics(entry);
+  window.dispatchEvent(new CustomEvent('studio:lightAdded', { detail: { role, type } }));
   return entry;
 }
 
@@ -1013,16 +1015,45 @@ function setCameraView(name) {
 
 // ─── SCREENSHOT ──────────────────────────────────────────────────────────────
 
-function takeScreenshot() {
+function captureFrame() {
   const th = transform.getHelper();
   const wasVis = th.visible; th.visible = false;
   composer.render();
   const url = canvas.toDataURL('image/png');
   th.visible = wasVis;
-  const a = document.createElement('a');
-  a.href = url; a.download = `studio_${Date.now()}.png`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  return url;
 }
+
+function takeScreenshot() {
+  const dialog = document.getElementById('screenshot-dialog');
+  dialog.classList.remove('hidden');
+  const input = document.getElementById('student-name');
+  input.value = '';
+  requestAnimationFrame(() => input.focus());
+}
+
+document.getElementById('sd-cancel').addEventListener('click', () => {
+  document.getElementById('screenshot-dialog').classList.add('hidden');
+});
+
+document.getElementById('sd-save').addEventListener('click', () => {
+  const name    = document.getElementById('student-name').value.trim();
+  const url     = captureFrame();
+  const filename = name
+    ? `${name.replace(/\s+/g, '_')}_LightingStudio.png`
+    : `LightingStudio_${Date.now()}.png`;
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  document.getElementById('screenshot-dialog').classList.add('hidden');
+  const sr = document.getElementById('sr-announce');
+  if (sr) sr.textContent = `Screenshot saved as ${filename}`;
+});
+
+document.getElementById('student-name').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('sd-save').click();
+  if (e.key === 'Escape') document.getElementById('sd-cancel').click();
+});
 
 // ─── UI EVENTS ───────────────────────────────────────────────────────────────
 
@@ -1152,3 +1183,6 @@ function animate() {
 }
 
 animate();
+
+// ─── WELCOME & TUTORIAL ──────────────────────────────────────────────────────
+initWelcome();

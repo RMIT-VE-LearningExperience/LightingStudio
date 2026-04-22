@@ -5,62 +5,157 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lighting Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <canvas id="canvas"></canvas>
+  <!-- ── Screen-reader live region ────────────────────────────────── -->
+  <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <canvas id="canvas" aria-label="3D lighting studio scene" role="img"></canvas>
+
+  <!-- ══ WELCOME SCREEN ══════════════════════════════════════════════ -->
+  <div id="welcome-screen" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+
+    <div class="ws-orbs" aria-hidden="true">
+      <div class="ws-orb" style="--c:#FFD166;--x:10%;--y:15%;--s:420px;--dur:9s;--delay:0s"></div>
+      <div class="ws-orb" style="--c:#6EC6F5;--x:80%;--y:60%;--s:320px;--dur:12s;--delay:-3s"></div>
+      <div class="ws-orb" style="--c:#FF6B9D;--x:55%;--y:88%;--s:260px;--dur:10s;--delay:-6s"></div>
+      <div class="ws-orb" style="--c:#7c6ef5;--x:88%;--y:10%;--s:220px;--dur:14s;--delay:-2s"></div>
+      <div class="ws-orb" style="--c:#7ECAC9;--x:20%;--y:75%;--s:180px;--dur:11s;--delay:-8s"></div>
+      <div class="ws-orb" style="--c:#FF9947;--x:42%;--y:28%;--s:150px;--dur:13s;--delay:-4s"></div>
+    </div>
+
+    <div class="ws-card" role="main">
+      <div class="ws-icon" aria-hidden="true">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="8" stroke="white" stroke-width="1.8"/>
+          <line x1="20" y1="2"  x2="20" y2="8"  stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="20" y1="32" x2="20" y2="38" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="2"  y1="20" x2="8"  y2="20" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="32" y1="20" x2="38" y2="20" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="7.5"  y1="7.5"  x2="11.7" y2="11.7" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="28.3" y1="28.3" x2="32.5" y2="32.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="32.5" y1="7.5"  x2="28.3" y2="11.7" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="11.7" y1="28.3" x2="7.5"  y2="32.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="ws-tag">RMIT VE · Creative Industries</div>
+      <h1 id="welcome-title" class="ws-title">Lighting Studio</h1>
+      <p class="ws-sub">Master the art of photography lighting</p>
+
+      <ul class="ws-features" aria-label="What you will learn">
+        <li><span class="ws-dot" style="--c:#FFD166" aria-hidden="true"></span>How light direction creates shadow and depth</li>
+        <li><span class="ws-dot" style="--c:#6EC6F5" aria-hidden="true"></span>How colour temperature sets the mood</li>
+        <li><span class="ws-dot" style="--c:#FF6B9D" aria-hidden="true"></span>How fill lights control contrast</li>
+        <li><span class="ws-dot" style="--c:#7c6ef5" aria-hidden="true"></span>How to capture your setup for submission</li>
+      </ul>
+
+      <div class="ws-actions">
+        <button id="btn-start-tutorial" class="ws-btn ws-btn-primary" autofocus>
+          Begin Tutorial
+          <span class="ws-badge">~5 min</span>
+        </button>
+        <button id="btn-open-studio" class="ws-btn ws-btn-ghost">
+          Open Studio
+        </button>
+      </div>
+
+      <p class="ws-footer">No sign-in required &nbsp;·&nbsp; Works on desktop and tablet</p>
+    </div>
+  </div>
+
+  <!-- ══ TUTORIAL OVERLAY ════════════════════════════════════════════ -->
+  <div id="tutorial" class="hidden" aria-live="polite" aria-label="Tutorial">
+    <div id="tut-backdrop" aria-hidden="true"></div>
+    <div id="tut-card" class="tut-card"
+         role="dialog" aria-modal="false"
+         aria-labelledby="tut-title" aria-describedby="tut-body">
+      <div class="tut-header">
+        <div class="tut-dots" id="tut-dots" aria-hidden="true"></div>
+        <span class="tut-counter" id="tut-counter" aria-label="Tutorial progress"></span>
+      </div>
+      <div class="tut-icon" id="tut-icon" aria-hidden="true"></div>
+      <h2 class="tut-title" id="tut-title"></h2>
+      <p class="tut-body"  id="tut-body"></p>
+      <div class="tut-hint" id="tut-hint"></div>
+      <div class="tut-footer">
+        <button id="tut-skip" class="tut-ghost-btn">Exit Tutorial</button>
+        <button id="tut-next" class="tut-primary-btn">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREENSHOT DIALOG ═══════════════════════════════════════════ -->
+  <div id="screenshot-dialog" class="dialog-overlay hidden"
+       role="dialog" aria-modal="true" aria-labelledby="sd-title">
+    <div class="dialog-card">
+      <div class="dialog-icon" aria-hidden="true">📸</div>
+      <h2 id="sd-title" class="dialog-title">Save Your Setup</h2>
+      <p class="dialog-desc">Enter your name — it will be used as the filename so you can submit this as part of your assignment.</p>
+      <label for="student-name" class="sr-only">Your full name</label>
+      <input type="text" id="student-name" class="dialog-input"
+             placeholder="Your full name" autocomplete="name" maxlength="60">
+      <div class="dialog-actions">
+        <button id="sd-cancel" class="tut-ghost-btn">Cancel</button>
+        <button id="sd-save"   class="tut-primary-btn">Download Screenshot</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ── Always-visible studio HUD (top-right) ──────────────────── -->
-  <div id="hud">
+  <div id="hud" aria-label="Studio controls">
     <div class="hud-label">Studio</div>
     <label class="hud-row">
       <span>Exposure</span>
       <div class="hud-range">
-        <input type="range" class="slider" id="exposure" min="0.1" max="2" step="0.05" value="0.75">
-        <span class="rval">0.75</span>
+        <input type="range" class="slider" id="exposure"
+               min="0.1" max="2" step="0.05" value="0.75"
+               aria-label="Exposure" aria-valuetext="0.75">
+        <span class="rval" aria-hidden="true">0.75</span>
       </div>
     </label>
     <label class="hud-row">
       <span>Ambient</span>
       <div class="hud-range">
-        <input type="range" class="slider" id="ambient-intensity" min="0" max="1" step="0.01" value="0.06">
-        <span class="rval">0.06</span>
+        <input type="range" class="slider" id="ambient-intensity"
+               min="0" max="1" step="0.01" value="0.06"
+               aria-label="Ambient light intensity" aria-valuetext="0.06">
+        <span class="rval" aria-hidden="true">0.06</span>
       </div>
     </label>
     <label class="hud-row">
       <span>Bloom</span>
       <div class="hud-range">
-        <input type="range" class="slider" id="bloom-strength" min="0" max="2" step="0.05" value="0.20">
-        <span class="rval">0.20</span>
+        <input type="range" class="slider" id="bloom-strength"
+               min="0" max="2" step="0.05" value="0.20"
+               aria-label="Bloom strength" aria-valuetext="0.20">
+        <span class="rval" aria-hidden="true">0.20</span>
       </div>
     </label>
   </div>
 
   <!-- ── Light popup panel (left, slides in) ────────────────────── -->
-  <div id="light-panel">
-    <div id="lp-accent-bar"></div>
-
+  <div id="light-panel" role="complementary" aria-label="Light controls">
+    <div id="lp-accent-bar" aria-hidden="true"></div>
     <div id="lp-header">
       <div id="lp-title-wrap">
-        <div id="lp-dot"></div>
+        <div id="lp-dot" aria-hidden="true"></div>
         <div>
           <div id="lp-name">Key Light</div>
-          <div id="lp-role-badge"></div>
+          <div id="lp-role-badge" aria-hidden="true"></div>
         </div>
       </div>
       <div id="lp-header-btns">
-        <button id="lp-return" class="lp-hbtn">← Return</button>
-        <button id="lp-close"  class="lp-hbtn lp-hbtn-x">×</button>
+        <button id="lp-return" class="lp-hbtn" aria-label="Return to studio">← Return</button>
+        <button id="lp-close"  class="lp-hbtn lp-hbtn-x" aria-label="Close light panel">×</button>
       </div>
     </div>
-
-    <div id="lp-desc"></div>
-
-    <div id="lp-body"></div>
-
-    <div id="lp-physics">
+    <div id="lp-desc" aria-live="polite"></div>
+    <div id="lp-body" aria-label="Light settings"></div>
+    <div id="lp-physics" aria-label="Physics readout">
       <div class="phys-heading">Physics</div>
       <div class="phys-grid">
         <div class="phys-cell">
@@ -81,7 +176,6 @@
         </div>
       </div>
     </div>
-
     <div id="lp-footer">
       <button id="lp-toggle" class="lp-btn">Turn OFF</button>
       <button id="lp-delete" class="lp-btn lp-btn-danger">Delete Light</button>
@@ -89,94 +183,103 @@
   </div>
 
   <!-- ── Object popup panel (top-left, small) ───────────────────── -->
-  <div id="object-panel">
+  <div id="object-panel" role="complementary" aria-label="Object controls">
     <div id="op-header">
       <span>Object</span>
-      <button id="op-close">×</button>
+      <button id="op-close" aria-label="Close object panel">×</button>
     </div>
     <div id="op-body">
       <label class="op-row">
         <span>Color</span>
-        <input type="color" id="obj-color" value="#cccccc">
+        <input type="color" id="obj-color" value="#cccccc" aria-label="Object colour">
       </label>
       <label class="op-row">
         <span>Roughness</span>
         <div class="op-range">
-          <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5">
-          <span class="rval">0.50</span>
+          <input type="range" class="slider" id="obj-roughness"
+                 min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
+          <span class="rval" aria-hidden="true">0.50</span>
         </div>
       </label>
       <label class="op-row">
         <span>Metalness</span>
         <div class="op-range">
-          <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05">
-          <span class="rval">0.05</span>
+          <input type="range" class="slider" id="obj-metalness"
+                 min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
+          <span class="rval" aria-hidden="true">0.05</span>
         </div>
       </label>
-      <div class="op-modes">
-        <button data-mode="translate" class="mode-btn active">Move</button>
-        <button data-mode="rotate"    class="mode-btn">Rotate</button>
-        <button data-mode="scale"     class="mode-btn">Scale</button>
+      <div class="op-modes" role="group" aria-label="Transform mode">
+        <button data-mode="translate" class="mode-btn active" aria-pressed="true">Move</button>
+        <button data-mode="rotate"    class="mode-btn"        aria-pressed="false">Rotate</button>
+        <button data-mode="scale"     class="mode-btn"        aria-pressed="false">Scale</button>
       </div>
       <button id="delete-selected" class="op-danger">Delete Object</button>
     </div>
   </div>
 
   <!-- ── Bottom toolbar ─────────────────────────────────────────── -->
-  <nav id="toolbar">
+  <nav id="toolbar" aria-label="Studio toolbar">
     <div class="tb-section">
-      <span class="tb-label">Add Light</span>
-      <div class="tb-lights">
-        <button class="lt-btn" data-role="key"        style="--lc:#FFD166">
-          <span class="lt-pip"></span>Key Light
+      <span class="tb-label" aria-hidden="true">Add Light</span>
+      <div class="tb-lights" role="group" aria-label="Add a light">
+        <button class="lt-btn" data-role="key"        style="--lc:#FFD166"
+                aria-label="Add Key Light — primary source, creates hard shadows">
+          <span class="lt-pip" aria-hidden="true"></span>Key Light
         </button>
-        <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5">
-          <span class="lt-pip"></span>Fill Light
+        <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5"
+                aria-label="Add Fill Light — softens shadows, reduces contrast">
+          <span class="lt-pip" aria-hidden="true"></span>Fill Light
         </button>
-        <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D">
-          <span class="lt-pip"></span>Back Light
+        <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D"
+                aria-label="Add Back Light — separates subject from background">
+          <span class="lt-pip" aria-hidden="true"></span>Back Light
         </button>
-        <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9">
-          <span class="lt-pip"></span>Hair Light
+        <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9"
+                aria-label="Add Hair Light — top light for depth and sheen">
+          <span class="lt-pip" aria-hidden="true"></span>Hair Light
         </button>
-        <button class="lt-btn" data-role="background" style="--lc:#B69CF5">
-          <span class="lt-pip"></span>BG Light
+        <button class="lt-btn" data-role="background" style="--lc:#B69CF5"
+                aria-label="Add Background Light — lights backdrop independently">
+          <span class="lt-pip" aria-hidden="true"></span>BG Light
         </button>
-        <button class="lt-btn" data-role="practical"  style="--lc:#FF9947">
-          <span class="lt-pip"></span>Practical
+        <button class="lt-btn" data-role="practical"  style="--lc:#FF9947"
+                aria-label="Add Practical Light — visible in-frame source like a lamp">
+          <span class="lt-pip" aria-hidden="true"></span>Practical
         </button>
       </div>
     </div>
 
-    <div class="tb-sep"></div>
+    <div class="tb-sep" aria-hidden="true"></div>
 
     <div class="tb-section">
-      <span class="tb-label">Object</span>
-      <div class="tb-objs">
-        <button class="tb-obj" data-add-object="sphere"   title="Sphere">●</button>
-        <button class="tb-obj" data-add-object="box"      title="Box">■</button>
-        <button class="tb-obj" data-add-object="cylinder" title="Cylinder">▬</button>
-        <button class="tb-obj" data-add-object="cone"     title="Cone">▲</button>
-        <button class="tb-obj" data-add-object="torus"    title="Torus">◎</button>
+      <span class="tb-label" aria-hidden="true">Object</span>
+      <div class="tb-objs" role="group" aria-label="Add an object">
+        <button class="tb-obj" data-add-object="sphere"   aria-label="Add sphere">●</button>
+        <button class="tb-obj" data-add-object="box"      aria-label="Add box">■</button>
+        <button class="tb-obj" data-add-object="cylinder" aria-label="Add cylinder">▬</button>
+        <button class="tb-obj" data-add-object="cone"     aria-label="Add cone">▲</button>
+        <button class="tb-obj" data-add-object="torus"    aria-label="Add torus">◎</button>
       </div>
     </div>
 
-    <div class="tb-sep"></div>
+    <div class="tb-sep" aria-hidden="true"></div>
 
     <div class="tb-section">
-      <span class="tb-label">View</span>
-      <div class="tb-views">
-        <button class="tb-view" data-view="front">Front</button>
-        <button class="tb-view" data-view="side">Side</button>
-        <button class="tb-view" data-view="top">Top</button>
-        <button class="tb-view" data-view="quarter">3/4</button>
+      <span class="tb-label" aria-hidden="true">View</span>
+      <div class="tb-views" role="group" aria-label="Camera view">
+        <button class="tb-view" data-view="front"   aria-label="Front view">Front</button>
+        <button class="tb-view" data-view="side"    aria-label="Side view">Side</button>
+        <button class="tb-view" data-view="top"     aria-label="Top view">Top</button>
+        <button class="tb-view" data-view="quarter" aria-label="Three-quarter view">3/4</button>
       </div>
     </div>
 
-    <div class="tb-sep"></div>
+    <div class="tb-sep" aria-hidden="true"></div>
 
-    <button id="screenshot-btn" title="Screenshot">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button id="screenshot-btn" aria-label="Take screenshot for assignment submission">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
         <circle cx="12" cy="13" r="4"/>
       </svg>
@@ -185,7 +288,7 @@
   </nav>
 
   <!-- ── Hints ──────────────────────────────────────────────────── -->
-  <div id="hints">
+  <div id="hints" aria-label="Keyboard shortcuts" role="note">
     G · Move &nbsp;·&nbsp; R · Rotate &nbsp;·&nbsp; S · Scale &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
   </div>
 
