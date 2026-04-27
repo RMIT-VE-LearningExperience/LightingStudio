@@ -117,24 +117,11 @@
         <span class="rval" aria-hidden="true">0.75</span>
       </div>
     </label>
-    <label class="hud-row">
-      <span>Ambient</span>
-      <div class="hud-range">
-        <input type="range" class="slider" id="ambient-intensity"
-               min="0" max="1" step="0.01" value="0.06"
-               aria-label="Ambient light intensity" aria-valuetext="0.06">
-        <span class="rval" aria-hidden="true">0.06</span>
-      </div>
-    </label>
-    <label class="hud-row">
-      <span>Bloom</span>
-      <div class="hud-range">
-        <input type="range" class="slider" id="bloom-strength"
-               min="0" max="2" step="0.05" value="0.20"
-               aria-label="Bloom strength" aria-valuetext="0.20">
-        <span class="rval" aria-hidden="true">0.20</span>
-      </div>
-    </label>
+    <div class="hud-row hud-row-btn">
+      <button id="studio-lights-btn" class="hud-toggle" aria-pressed="true">
+        Lights ON
+      </button>
+    </div>
   </div>
 
   <!-- ── Light popup panel (left, slides in) ────────────────────── -->
@@ -189,6 +176,51 @@
       <button id="op-close" aria-label="Close object panel">×</button>
     </div>
     <div id="op-body">
+
+      <details class="op-advanced">
+        <summary class="op-advanced-toggle">Advanced ▾</summary>
+
+        <div class="op-section-label">Position</div>
+        <label class="op-row">
+          <span>Left / Right</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-x" min="-5" max="5" step="0.1" value="0" aria-label="Left right position">
+            <span class="rval" id="obj-pos-x-val">0.0</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Height</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-y" min="0" max="4" step="0.05" value="0.6" aria-label="Height">
+            <span class="rval" id="obj-pos-y-val">0.6</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Fore / Back</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-z" min="-4" max="4" step="0.1" value="0" aria-label="Fore back position">
+            <span class="rval" id="obj-pos-z-val">0.0</span>
+          </div>
+        </label>
+
+        <div class="op-section-label">Transform</div>
+        <label class="op-row">
+          <span>Spin</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-rot-y" min="-180" max="180" step="1" value="0" aria-label="Rotation">
+            <span class="rval" id="obj-rot-y-val">0°</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Size</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-scale" min="0.2" max="3" step="0.05" value="1" aria-label="Size">
+            <span class="rval" id="obj-scale-val">1.0</span>
+          </div>
+        </label>
+      </details>
+
+      <div class="op-section-label">Material</div>
       <label class="op-row">
         <span>Color</span>
         <input type="color" id="obj-color" value="#cccccc" aria-label="Object colour">
@@ -196,84 +228,128 @@
       <label class="op-row">
         <span>Roughness</span>
         <div class="op-range">
-          <input type="range" class="slider" id="obj-roughness"
-                 min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
+          <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
           <span class="rval" aria-hidden="true">0.50</span>
         </div>
       </label>
       <label class="op-row">
         <span>Metalness</span>
         <div class="op-range">
-          <input type="range" class="slider" id="obj-metalness"
-                 min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
+          <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
           <span class="rval" aria-hidden="true">0.05</span>
         </div>
       </label>
-      <div class="op-modes" role="group" aria-label="Transform mode">
-        <button data-mode="translate" class="mode-btn active" aria-pressed="true">Move</button>
-        <button data-mode="rotate"    class="mode-btn"        aria-pressed="false">Rotate</button>
-        <button data-mode="scale"     class="mode-btn"        aria-pressed="false">Scale</button>
-      </div>
+
       <button id="delete-selected" class="op-danger">Delete Object</button>
+    </div>
+  </div>
+
+  <!-- ── Floating panels (open above toolbar) ──────────────────── -->
+
+  <div id="tb-lights-panel" class="tb-panel hidden" role="dialog" aria-label="Add a light">
+    <div class="tb-panel-title">Add Light</div>
+    <div class="tb-panel-lights">
+      <button class="lt-btn" data-role="key"        style="--lc:#FFD166" aria-label="Add Key Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Key Light</span>
+        <span class="lt-sub">Primary source</span>
+      </button>
+      <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5" aria-label="Add Fill Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Fill Light</span>
+        <span class="lt-sub">Soften shadows</span>
+      </button>
+      <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D" aria-label="Add Back Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Back Light</span>
+        <span class="lt-sub">Edge separation</span>
+      </button>
+      <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9" aria-label="Add Hair Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Hair Light</span>
+        <span class="lt-sub">Depth &amp; sheen</span>
+      </button>
+      <button class="lt-btn" data-role="background" style="--lc:#B69CF5" aria-label="Add Background Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">BG Light</span>
+        <span class="lt-sub">Light the backdrop</span>
+      </button>
+      <button class="lt-btn" data-role="practical"  style="--lc:#FF9947" aria-label="Add Practical Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Practical</span>
+        <span class="lt-sub">Visible in-frame</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="tb-objects-panel" class="tb-panel hidden" role="dialog" aria-label="Add an object">
+    <div class="tb-panel-title">Add Object</div>
+    <div class="tb-panel-objects">
+      <button class="tb-obj-card" data-add-object="sphere"   aria-label="Add sphere">
+        <span class="tb-obj-icon">●</span><span>Sphere</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="box"      aria-label="Add box">
+        <span class="tb-obj-icon">■</span><span>Box</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="cylinder" aria-label="Add cylinder">
+        <span class="tb-obj-icon">▬</span><span>Cylinder</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="cone"     aria-label="Add cone">
+        <span class="tb-obj-icon">▲</span><span>Cone</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="torus"    aria-label="Add torus">
+        <span class="tb-obj-icon">◎</span><span>Torus</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="tb-views-panel" class="tb-panel hidden" role="dialog" aria-label="Camera views">
+    <div class="tb-panel-title">Camera View</div>
+    <div class="tb-panel-views">
+      <button class="tb-view-card" data-view="front"   aria-label="Front view">
+        <span class="tb-view-icon">↑</span><span>Front</span>
+      </button>
+      <button class="tb-view-card" data-view="side"    aria-label="Side view">
+        <span class="tb-view-icon">→</span><span>Side</span>
+      </button>
+      <button class="tb-view-card" data-view="top"     aria-label="Top view">
+        <span class="tb-view-icon">⊙</span><span>Top</span>
+      </button>
+      <button class="tb-view-card" data-view="quarter" aria-label="Three-quarter view">
+        <span class="tb-view-icon">⤢</span><span>3/4</span>
+      </button>
     </div>
   </div>
 
   <!-- ── Bottom toolbar ─────────────────────────────────────────── -->
   <nav id="toolbar" aria-label="Studio toolbar">
-    <div class="tb-section">
-      <span class="tb-label" aria-hidden="true">Add Light</span>
-      <div class="tb-lights" role="group" aria-label="Add a light">
-        <button class="lt-btn" data-role="key"        style="--lc:#FFD166"
-                aria-label="Add Key Light — primary source, creates hard shadows">
-          <span class="lt-pip" aria-hidden="true"></span>Key Light
-        </button>
-        <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5"
-                aria-label="Add Fill Light — softens shadows, reduces contrast">
-          <span class="lt-pip" aria-hidden="true"></span>Fill Light
-        </button>
-        <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D"
-                aria-label="Add Back Light — separates subject from background">
-          <span class="lt-pip" aria-hidden="true"></span>Back Light
-        </button>
-        <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9"
-                aria-label="Add Hair Light — top light for depth and sheen">
-          <span class="lt-pip" aria-hidden="true"></span>Hair Light
-        </button>
-        <button class="lt-btn" data-role="background" style="--lc:#B69CF5"
-                aria-label="Add Background Light — lights backdrop independently">
-          <span class="lt-pip" aria-hidden="true"></span>BG Light
-        </button>
-        <button class="lt-btn" data-role="practical"  style="--lc:#FF9947"
-                aria-label="Add Practical Light — visible in-frame source like a lamp">
-          <span class="lt-pip" aria-hidden="true"></span>Practical
-        </button>
-      </div>
-    </div>
+    <button id="tb-lights-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      Lights
+    </button>
 
     <div class="tb-sep" aria-hidden="true"></div>
 
-    <div class="tb-section">
-      <span class="tb-label" aria-hidden="true">Object</span>
-      <div class="tb-objs" role="group" aria-label="Add an object">
-        <button class="tb-obj" data-add-object="sphere"   aria-label="Add sphere">●</button>
-        <button class="tb-obj" data-add-object="box"      aria-label="Add box">■</button>
-        <button class="tb-obj" data-add-object="cylinder" aria-label="Add cylinder">▬</button>
-        <button class="tb-obj" data-add-object="cone"     aria-label="Add cone">▲</button>
-        <button class="tb-obj" data-add-object="torus"    aria-label="Add torus">◎</button>
-      </div>
-    </div>
+    <button id="tb-objects-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+      </svg>
+      Objects
+    </button>
 
     <div class="tb-sep" aria-hidden="true"></div>
 
-    <div class="tb-section">
-      <span class="tb-label" aria-hidden="true">View</span>
-      <div class="tb-views" role="group" aria-label="Camera view">
-        <button class="tb-view" data-view="front"   aria-label="Front view">Front</button>
-        <button class="tb-view" data-view="side"    aria-label="Side view">Side</button>
-        <button class="tb-view" data-view="top"     aria-label="Top view">Top</button>
-        <button class="tb-view" data-view="quarter" aria-label="Three-quarter view">3/4</button>
-      </div>
-    </div>
+    <button id="tb-views-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+      View
+    </button>
 
     <div class="tb-sep" aria-hidden="true"></div>
 
@@ -287,9 +363,26 @@
     </button>
   </nav>
 
+  <!-- ── Free Transform Overlay ───────────────────────────────── -->
+  <div id="transform-box" class="hidden" aria-hidden="true">
+    <div id="ft-bbox">
+      <div class="ft-corner" data-corner="nw"></div>
+      <div class="ft-corner" data-corner="ne"></div>
+      <div class="ft-corner" data-corner="sw"></div>
+      <div class="ft-corner" data-corner="se"></div>
+      <div id="ft-rot-line"></div>
+      <div id="ft-rot-handle" title="Rotate">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7 2 A5 5 0 1 0 12 7" stroke="#1a1829" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <polygon points="12,4 14,7 10,7" fill="#1a1829"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Hints ──────────────────────────────────────────────────── -->
   <div id="hints" aria-label="Keyboard shortcuts" role="note">
-    G · Move &nbsp;·&nbsp; R · Rotate &nbsp;·&nbsp; S · Scale &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
+    Drag box · Move &nbsp;·&nbsp; Drag corner · Scale &nbsp;·&nbsp; Drag ↻ · Rotate &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
   </div>
 
   <script type="module" src="js/main.js"></script>
