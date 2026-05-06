@@ -1036,21 +1036,23 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ws-logo-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: rgba(124,110,245,0.18);
-  border: 1px solid rgba(124,110,245,0.35);
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(167,139,250,0.28) 0%, rgba(109,40,217,0.45) 100%);
+  border: 1px solid rgba(167,139,250,0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2px;
-  box-shadow: 0 0 20px rgba(124,110,245,0.25);
+  margin-bottom: 4px;
+  box-shadow:
+    0 0 0 1px rgba(196,181,253,0.15) inset,
+    0 0 36px rgba(124,110,245,0.45),
+    0 8px 24px rgba(109,40,217,0.3);
 }
 .ws-logo-icon {
-  width: 32px;
-  height: 32px;
-  color: #a89df5;
+  width: 36px;
+  height: 36px;
 }
 
 .ws-badge-row {
@@ -1095,6 +1097,7 @@ input[type="range"]::-moz-range-thumb {
   max-width: 520px;
   line-height: 1.5;
   margin: 0;
+  margin-top: 10px;
 }
 
 /* Learning outcome grid */
@@ -1163,11 +1166,11 @@ input[type="range"]::-moz-range-thumb {
 .ws-card-item h3 {
   grid-column: 1;
   grid-row: 1;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.78);
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   transition: color 0.25s;
 }
 .ws-card-item:hover h3 {
