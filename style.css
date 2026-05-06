@@ -1110,12 +1110,15 @@ input[type="range"]::-moz-range-thumb {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  overflow: hidden;
+  cursor: default;
 }
 .ws-card-item:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.22);
   transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08) inset;
 }
 
 .ws-item-icon {
@@ -1129,6 +1132,11 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 8px;
   color: var(--ic);
   box-shadow: 0 0 12px rgba(var(--ic-rgb, 255,255,255), 0.1);
+  transition: box-shadow 0.25s, background 0.25s;
+}
+.ws-card-item:hover .ws-item-icon {
+  background: rgba(var(--ic-rgb, 255,255,255), 0.2);
+  box-shadow: 0 0 22px rgba(var(--ic-rgb, 255,255,255), 0.35);
 }
 /* fallback: parse hex colour as rgb via filter */
 .ws-item-icon[style*="--ic:#FFD166"] { --ic-rgb: 255,209,102; }
@@ -1146,15 +1154,29 @@ input[type="range"]::-moz-range-thumb {
 .ws-card-item h3 {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255,255,255,0.88);
-  margin: 0 0 4px;
+  color: rgba(255,255,255,0.75);
+  margin: 0;
   letter-spacing: -0.01em;
+  transition: color 0.25s;
 }
+.ws-card-item:hover h3 {
+  color: rgba(255,255,255,0.98);
+}
+
 .ws-card-item p {
   font-size: 11px;
-  color: rgba(255,255,255,0.42);
-  line-height: 1.5;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
   margin: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
+}
+.ws-card-item:hover p {
+  max-height: 80px;
+  opacity: 1;
+  margin-top: 7px;
 }
 
 
