@@ -1496,7 +1496,9 @@ app.on('update', () => {
     const target = new pc.Vec3(0, tiltY, 0);
     const dir    = new pc.Vec3().sub2(target, headPos).normalize();
     const tilt   = Math.acos(Math.max(-1, Math.min(1, -dir.y))) * (180 / Math.PI);
-    const pan    = Math.atan2(dir.x, -dir.z) * (180 / Math.PI);
+    // Beam horizontal direction follows stand pan — not derived from geometry,
+    // so rotating the stand actually rotates the beam.
+    const pan    = panAngle;
 
     if (entry.lightType === 'spot' || entry.lightType === 'rect') {
       entry.lightEntity.setLocalEulerAngles(tilt, pan, 0);
