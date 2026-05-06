@@ -1,4 +1,4 @@
-import * as pc from 'playcanvas';
+import * as pc from '../libs/playcanvas.mjs';
 import { initVR } from './vr.js';
 
 // ─── APPLICATION ──────────────────────────────────────────────────────────────

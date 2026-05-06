@@ -6,7 +6,7 @@
 // or run: npx vite --host   then access http://<your-ip>:5174 on the headset
 // after enabling "Allow non-HTTPS" in Pico browser flags.
 
-import * as pc from 'playcanvas';
+import * as pc from '../libs/playcanvas.mjs';
 
 // ─── Public init ──────────────────────────────────────────────────────────────
 
