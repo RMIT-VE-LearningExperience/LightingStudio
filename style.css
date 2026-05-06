@@ -1021,6 +1021,17 @@ input[type="range"]::-moz-range-thumb {
   width: 296px;
 }
 
+/* ── Pulse on closed strips ──────────────────────────────────────── */
+@keyframes strip-pulse {
+  0%, 100% { border-right-color: rgba(255,255,255,0.06); }
+  50%       { border-right-color: rgba(var(--tc-rgb, 255,255,255), 0.45); }
+}
+.acc-strip:not(.acc-open) {
+  animation: strip-pulse 3s ease-in-out infinite;
+}
+.acc-strip:nth-child(2):not(.acc-open) { animation-delay: 1s; }
+.acc-strip:nth-child(3):not(.acc-open) { animation-delay: 2s; }
+
 /* ── Narrow clickable tab trigger ───────────────────────────────── */
 .acc-strip-tab {
   width: 46px;
@@ -1050,6 +1061,15 @@ input[type="range"]::-moz-range-thumb {
   border-right-color: var(--tc, rgba(255,255,255,0.3));
   color: var(--tc, rgba(255,255,255,0.8));
 }
+
+.acc-strip-tab svg {
+  color: var(--tc, rgba(255,255,255,0.6));
+  opacity: 0.75;
+  transition: opacity 0.18s;
+  flex-shrink: 0;
+}
+.acc-strip.acc-open .acc-strip-tab svg,
+.acc-strip-tab:hover svg { opacity: 1; }
 
 .acc-strip-label {
   writing-mode: vertical-rl;
