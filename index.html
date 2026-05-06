@@ -54,16 +54,12 @@
                 <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
               </radialGradient>
             </defs>
-            <!-- main vertical spike -->
             <path d="M20 1 L22.2 17.8 L20 39 L17.8 17.8 Z" fill="url(#lu-v)"/>
-            <!-- main horizontal spike -->
             <path d="M1 20 L17.8 17.8 L39 20 L17.8 22.2 Z" fill="url(#lu-h)"/>
-            <!-- diagonal spikes (shorter) -->
             <path d="M7.5 7.5 L17.2 17.2 L8.5 8.5 L18.2 18.8 Z" fill="url(#lu-d1)" opacity="0.7"/>
             <path d="M32.5 7.5 L22.8 17.2 L31.5 8.5 L21.8 18.8 Z" fill="url(#lu-d2)" opacity="0.7"/>
             <path d="M7.5 32.5 L17.2 22.8 L8.5 31.5 L18.2 21.2 Z" fill="url(#lu-d1)" opacity="0.7"/>
             <path d="M32.5 32.5 L22.8 22.8 L31.5 31.5 L21.8 21.2 Z" fill="url(#lu-d2)" opacity="0.7"/>
-            <!-- centre glow -->
             <circle cx="20" cy="20" r="5.5" fill="url(#lu-glow)"/>
             <circle cx="20" cy="20" r="2.2" fill="white" opacity="0.95"/>
           </svg>
@@ -337,65 +333,242 @@
     </div>
   </div>
 
-  <!-- ── Floating panels (open above toolbar) ──────────────────── -->
+  <!-- ══ VERTICAL STRIP PANEL ═══════════════════════════════════════
+       Three narrow strips on the left — click to expand horizontally.
+  ════════════════════════════════════════════════════════════════════ -->
+  <div id="acc-panel" aria-label="Studio tools">
 
-  <div id="tb-lights-panel" class="tb-panel hidden" role="dialog" aria-label="Add a light">
-    <div class="tb-panel-title">Add Light</div>
-    <div class="tb-panel-lights">
-      <button class="lt-btn" data-role="key"        style="--lc:#FFD166" aria-label="Add Key Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">Key Light</span>
-        <span class="lt-sub">Primary source</span>
+    <!-- ── Strip 1: Lighting Equipment ───────────────────────────── -->
+    <div class="acc-strip" data-tab="lights" style="--tc:#FFD166;--tc-rgb:255,209,102">
+      <button class="acc-strip-tab" aria-expanded="false" aria-label="Lighting Equipment">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="10" r="5" fill="currentColor" opacity=".15"/>
+          <circle cx="12" cy="10" r="5"/>
+          <line x1="12" y1="15" x2="12" y2="19"/>
+          <line x1="9" y1="19" x2="15" y2="19"/>
+          <path d="M9 7.5 L8 6M15 7.5 L16 6M9 12.5 L8 14M15 12.5 L16 14" stroke-width="1.2"/>
+        </svg>
+        <span class="acc-strip-label">Lighting</span>
       </button>
-      <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5" aria-label="Add Fill Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">Fill Light</span>
-        <span class="lt-sub">Soften shadows</span>
-      </button>
-      <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D" aria-label="Add Back Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">Back Light</span>
-        <span class="lt-sub">Edge separation</span>
-      </button>
-      <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9" aria-label="Add Hair Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">Hair Light</span>
-        <span class="lt-sub">Depth &amp; sheen</span>
-      </button>
-      <button class="lt-btn" data-role="background" style="--lc:#B69CF5" aria-label="Add Background Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">BG Light</span>
-        <span class="lt-sub">Light the backdrop</span>
-      </button>
-      <button class="lt-btn" data-role="practical"  style="--lc:#FF9947" aria-label="Add Practical Light">
-        <span class="lt-pip" aria-hidden="true"></span>
-        <span class="lt-name">Practical</span>
-        <span class="lt-sub">Visible in-frame</span>
-      </button>
-    </div>
-  </div>
+      <div class="acc-strip-content">
+        <div class="acc-content-title">Lighting Equipment</div>
 
-  <div id="tb-objects-panel" class="tb-panel hidden" role="dialog" aria-label="Add an object">
-    <div class="tb-panel-title">Add Object</div>
-    <div class="tb-panel-objects">
-      <button class="tb-obj-card" data-add-object="sphere"   aria-label="Add sphere">
-        <span class="tb-obj-icon">●</span><span>Sphere</span>
-      </button>
-      <button class="tb-obj-card" data-add-object="box"      aria-label="Add box">
-        <span class="tb-obj-icon">■</span><span>Box</span>
-      </button>
-      <button class="tb-obj-card" data-add-object="cylinder" aria-label="Add cylinder">
-        <span class="tb-obj-icon">▬</span><span>Cylinder</span>
-      </button>
-      <button class="tb-obj-card" data-add-object="cone"     aria-label="Add cone">
-        <span class="tb-obj-icon">▲</span><span>Cone</span>
-      </button>
-      <button class="tb-obj-card" data-add-object="torus"    aria-label="Add torus">
-        <span class="tb-obj-icon">◎</span><span>Torus</span>
-      </button>
-    </div>
-  </div>
+        <div class="fix-card" style="--fc:#FFD166;--fc-rgb:255,209,102">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="9" r="5" fill="currentColor" opacity=".12"/>
+              <circle cx="12" cy="9" r="2.5"/>
+              <path d="M7 4.5L5 3M17 4.5L19 3M7 13.5L5 15M17 13.5L19 15" stroke-width="1.3"/>
+              <line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="18" x2="14" y2="18"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Fresnel Spot</div>
+            <div class="fix-desc">Hard, focused beam with barn doors. Classic key light.</div>
+          </div>
+          <button class="fix-add" data-equip="fresnel" aria-label="Add Fresnel Spot">Add</button>
+        </div>
 
+        <div class="fix-card" style="--fc:#FF9947;--fc-rgb:255,153,71">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 14 Q12 5 16 14Z" fill="currentColor" opacity=".15"/>
+              <path d="M8 14 Q12 5 16 14"/>
+              <circle cx="12" cy="10" r="1.8" fill="currentColor" opacity=".6"/>
+              <rect x="9.5" y="14" width="5" height="3" rx="1"/>
+              <line x1="12" y1="17" x2="12" y2="21"/><line x1="10" y1="21" x2="14" y2="21"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Monolight</div>
+            <div class="fix-desc">Self-contained flash with reflector. Versatile key or fill.</div>
+          </div>
+          <button class="fix-add" data-equip="monolight" aria-label="Add Monolight">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#6EC6F5;--fc-rgb:110,198,245">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="10" rx="2" fill="currentColor" opacity=".12"/>
+              <rect x="3" y="5" width="18" height="10" rx="2"/>
+              <line x1="3" y1="9.5" x2="21" y2="9.5" stroke-width="1.1"/>
+              <line x1="3" y1="12.5" x2="21" y2="12.5" stroke-width="1.1"/>
+              <circle cx="12" cy="10" r="1.2" fill="currentColor" opacity=".5"/>
+              <line x1="12" y1="15" x2="12" y2="20"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Softbox</div>
+            <div class="fix-desc">Large diffused rect source. Soft, flattering fill.</div>
+          </div>
+          <button class="fix-add" data-equip="softbox" aria-label="Add Softbox">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#B69CF5;--fc-rgb:182,156,245">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="9,3 15,3 19.5,7.5 19.5,13.5 15,18 9,18 4.5,13.5 4.5,7.5" fill="currentColor" opacity=".12"/>
+              <polygon points="9,3 15,3 19.5,7.5 19.5,13.5 15,18 9,18 4.5,13.5 4.5,7.5"/>
+              <circle cx="12" cy="10.5" r="2.5"/>
+              <line x1="12" y1="18" x2="12" y2="22"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Octabox</div>
+            <div class="fix-desc">Octagonal softbox. Round, natural catchlights.</div>
+          </div>
+          <button class="fix-add" data-equip="octabox" aria-label="Add Octabox">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#FF6B9D;--fc-rgb:255,107,157">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="8" y="3" width="8" height="13" rx="2" fill="currentColor" opacity=".12"/>
+              <rect x="8" y="3" width="8" height="13" rx="2"/>
+              <circle cx="12" cy="9" r="3" fill="currentColor" opacity=".2"/>
+              <path d="M6 9L8 9M16 9L18 9" stroke-width="1.3"/>
+              <line x1="12" y1="16" x2="12" y2="21"/><line x1="10" y1="21" x2="14" y2="21"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">PAR Can</div>
+            <div class="fix-desc">Narrow, punchy beam. Great for rim and hair separation.</div>
+          </div>
+          <button class="fix-add" data-equip="parcan" aria-label="Add PAR Can">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#7ECAC9;--fc-rgb:126,202,201">
+          <div class="fix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="9" rx="2" fill="currentColor" opacity=".12"/>
+              <rect x="2" y="7" width="20" height="9" rx="2"/>
+              <circle cx="7"    cy="10" r="0.9" fill="currentColor"/>
+              <circle cx="10.5" cy="10" r="0.9" fill="currentColor"/>
+              <circle cx="14"   cy="10" r="0.9" fill="currentColor"/>
+              <circle cx="17.5" cy="10" r="0.9" fill="currentColor"/>
+              <circle cx="7"    cy="13" r="0.9" fill="currentColor"/>
+              <circle cx="10.5" cy="13" r="0.9" fill="currentColor"/>
+              <circle cx="14"   cy="13" r="0.9" fill="currentColor"/>
+              <circle cx="17.5" cy="13" r="0.9" fill="currentColor"/>
+              <line x1="12" y1="16" x2="12" y2="20"/>
+            </svg>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">LED Panel</div>
+            <div class="fix-desc">Adjustable colour temp. Fill, background, or interview key.</div>
+          </div>
+          <button class="fix-add" data-equip="ledpanel" aria-label="Add LED Panel">Add</button>
+        </div>
+
+      </div>
+    </div><!-- Strip: lights -->
+
+    <!-- ── Strip 2: Scene Objects ─────────────────────────────────── -->
+    <div class="acc-strip" data-tab="objects" style="--tc:#7ECAC9;--tc-rgb:126,202,201">
+      <button class="acc-strip-tab" aria-expanded="false" aria-label="Scene Objects">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2.5" fill="currentColor" opacity=".12"/>
+          <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+        </svg>
+        <span class="acc-strip-label">Objects</span>
+      </button>
+      <div class="acc-strip-content">
+        <div class="acc-content-title">Scene Objects</div>
+        <p class="acc-hint">Add shapes to practice lighting on different surfaces.</p>
+        <div class="shape-grid">
+          <button class="shape-btn" data-add-object="sphere" aria-label="Add sphere">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="12" cy="12" r="8" fill="currentColor" opacity=".1"/><circle cx="12" cy="12" r="8"/>
+              <path d="M4 12 Q12 8 20 12" stroke-width="1.1"/><path d="M4 12 Q12 16 20 12" stroke-width="1.1"/>
+            </svg>
+            <span>Sphere</span>
+          </button>
+          <button class="shape-btn" data-add-object="box" aria-label="Add box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="9" width="12" height="12" fill="currentColor" opacity=".1"/><rect x="4" y="9" width="12" height="12"/>
+              <path d="M4 9L8 5L20 5L20 17L16 21M8 5L8 9"/><line x1="20" y1="5" x2="16" y2="9"/>
+            </svg>
+            <span>Box</span>
+          </button>
+          <button class="shape-btn" data-add-object="cylinder" aria-label="Add cylinder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <ellipse cx="12" cy="6" rx="7" ry="2.5"/>
+              <ellipse cx="12" cy="18" rx="7" ry="2.5" fill="currentColor" opacity=".1"/>
+              <line x1="5" y1="6" x2="5" y2="18"/><line x1="19" y1="6" x2="19" y2="18"/>
+            </svg>
+            <span>Cylinder</span>
+          </button>
+          <button class="shape-btn" data-add-object="cone" aria-label="Add cone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <ellipse cx="12" cy="19" rx="7" ry="2" fill="currentColor" opacity=".1"/>
+              <ellipse cx="12" cy="19" rx="7" ry="2"/>
+              <path d="M5 19L12 4L19 19"/>
+            </svg>
+            <span>Cone</span>
+          </button>
+          <button class="shape-btn" data-add-object="torus" aria-label="Add torus">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <ellipse cx="12" cy="14" rx="8" ry="4"/>
+              <path d="M4 10 Q4 6 12 6 Q20 6 20 10"/>
+              <path d="M4 10 Q4 14 12 18 Q20 14 20 10"/>
+            </svg>
+            <span>Torus</span>
+          </button>
+        </div>
+      </div>
+    </div><!-- Strip: objects -->
+
+    <!-- ── Strip 3: Setup Guide ───────────────────────────────────── -->
+    <div class="acc-strip" data-tab="guide" style="--tc:#B69CF5;--tc-rgb:182,156,245">
+      <button class="acc-strip-tab" aria-expanded="false" aria-label="Setup Guide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <span class="acc-strip-label">Guide</span>
+      </button>
+      <div class="acc-strip-content">
+        <div class="acc-content-title">Three-Point Setup</div>
+        <div class="guide-diagram" aria-hidden="true">
+          <svg viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="60" cy="52" r="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+            <circle cx="22" cy="22" r="5" fill="rgba(255,209,102,0.12)" stroke="#FFD166" stroke-width="1.5" opacity="0.45"/>
+            <text x="9"  y="14" font-size="6" fill="#FFD166" opacity="0.5" font-family="sans-serif">Key</text>
+            <line x1="26" y1="26" x2="54" y2="48" stroke="#FFD166" stroke-width="1" opacity="0.3" stroke-dasharray="3,3"/>
+            <circle cx="98" cy="28" r="5" fill="rgba(110,198,245,0.12)" stroke="#6EC6F5" stroke-width="1.5" opacity="0.45"/>
+            <text x="88" y="20" font-size="6" fill="#6EC6F5" opacity="0.5" font-family="sans-serif">Fill</text>
+            <line x1="94" y1="31" x2="66" y2="49" stroke="#6EC6F5" stroke-width="1" opacity="0.3" stroke-dasharray="3,3"/>
+            <circle cx="60" cy="8"  r="5" fill="rgba(255,107,157,0.12)" stroke="#FF6B9D" stroke-width="1.5" opacity="0.45"/>
+            <text x="50" y="4"  font-size="6" fill="#FF6B9D" opacity="0.5" font-family="sans-serif">Rim</text>
+            <line x1="60" y1="13" x2="60" y2="44" stroke="#FF6B9D" stroke-width="1" opacity="0.3" stroke-dasharray="3,3"/>
+          </svg>
+        </div>
+        <div class="guide-checklist" id="guide-checklist">
+          <div class="guide-item" id="guide-key">
+            <span class="guide-dot" style="--gc:#FFD166"></span>
+            <span class="guide-label">Key Light</span>
+            <span class="guide-status" id="guide-key-status">missing</span>
+          </div>
+          <div class="guide-item" id="guide-fill">
+            <span class="guide-dot" style="--gc:#6EC6F5"></span>
+            <span class="guide-label">Fill Light</span>
+            <span class="guide-status" id="guide-fill-status">missing</span>
+          </div>
+          <div class="guide-item" id="guide-rim">
+            <span class="guide-dot" style="--gc:#FF6B9D"></span>
+            <span class="guide-label">Rim Light</span>
+            <span class="guide-status" id="guide-rim-status">missing</span>
+          </div>
+        </div>
+        <div class="guide-ratio" id="guide-ratio-row" style="display:none">
+          <span class="guide-ratio-label">Key : Fill ratio</span>
+          <span class="guide-ratio-val" id="guide-ratio-val">—</span>
+        </div>
+      </div>
+    </div><!-- Strip: guide -->
+
+  </div><!-- #acc-panel -->
+
+  <!-- ── HUD-anchored floating panels ───────────────────────────── -->
   <div id="tb-views-panel" class="tb-panel hidden" role="dialog" aria-label="Reset camera view">
     <div class="tb-panel-title">Reset View</div>
     <div class="tb-panel-views">
@@ -424,43 +597,23 @@
     </div>
   </div>
 
-  <!-- ── Bottom toolbar ─────────────────────────────────────────── -->
-  <nav id="toolbar" aria-label="Studio toolbar">
-    <button id="tb-lights-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      Lights
-    </button>
+  <!-- ── Screenshot button (bottom-right) ─────────────────────── -->
+  <button id="screenshot-btn" aria-label="Take screenshot for assignment submission">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+    Save Screenshot
+  </button>
 
-    <div class="tb-sep" aria-hidden="true"></div>
-
-    <button id="tb-objects-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-      </svg>
-      Objects
-    </button>
-
-    <button id="vr-btn" aria-label="Enter VR mode" style="display:none">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9z"/>
-        <circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/>
-      </svg>
-      VR
-    </button>
-    <button id="screenshot-btn" aria-label="Take screenshot for assignment submission">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-        <circle cx="12" cy="13" r="4"/>
-      </svg>
-      Shot
-    </button>
-  </nav>
+  <!-- VR button (hidden until device detected) -->
+  <button id="vr-btn" aria-label="Enter VR mode" style="display:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9z"/>
+      <circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/>
+    </svg>
+    VR
+  </button>
 
   <!-- ── Free Transform Overlay ───────────────────────────────── -->
   <div id="transform-box" class="hidden" aria-hidden="true">

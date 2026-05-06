@@ -474,6 +474,7 @@ function addLight(equipType, cfg = {}) {
   lights.push(entry);
   applyLightPhysics(entry);
   window.dispatchEvent(new CustomEvent('studio:lightAdded', { detail: { role, equipType } }));
+  updateSetupGuide();
   return entry;
 }
 
@@ -485,6 +486,7 @@ function removeLight(id) {
   group.destroy();
   lightEntity.destroy();
   lights.splice(i, 1);
+  updateSetupGuide();
 }
 
 function toggleLight(id) {
@@ -756,6 +758,7 @@ function updatePhysicsReadout(entry) {
 
 function selectObj(entity) {
   clearSelection();
+  hideAccordion();
   selObj = entity;
   const mat = entity.render.meshInstances[0].material;
   mat.emissive.set(0.1, 0.1, 0.1);
@@ -771,6 +774,7 @@ function selectObj(entity) {
 
 function selectLight(entry) {
   clearSelection();
+  hideAccordion();
   selLight = entry;
   const em = findNamed(entry.headEntity, 'emissive');
   if (em) {
@@ -798,6 +802,7 @@ function clearSelection() {
   freeTransformBox?.classList.add('hidden');
   closeLightPanel();
   closeObjectPanel();
+  showAccordion();
 }
 
 function deleteSelected() {
@@ -1083,10 +1088,8 @@ window.addEventListener('keydown', e => {
 // ─── TOOLBAR PANELS ───────────────────────────────────────────────────────────
 
 const TB_PANELS = {
-  'tb-lights-btn':  'tb-lights-panel',
-  'tb-objects-btn': 'tb-objects-panel',
-  'tb-views-btn':   'tb-views-panel',
-  'hud-help-btn':   'hud-help-panel',
+  'tb-views-btn': 'tb-views-panel',
+  'hud-help-btn': 'hud-help-panel',
 };
 
 function closeAllPanels() {
@@ -1115,14 +1118,6 @@ document.addEventListener('click', e => {
 
 // ─── TOOLBAR ACTIONS ──────────────────────────────────────────────────────────
 
-document.querySelectorAll('[data-role]').forEach(b =>
-  b.addEventListener('click', () => {
-    closeAllPanels();
-    const entry = addLight(ROLE_EQUIP_MAP[b.dataset.role] || 'monolight', { role: b.dataset.role });
-    selectLight(entry);
-  })
-);
-
 document.querySelectorAll('[data-add-object]').forEach(b =>
   b.addEventListener('click', () => { closeAllPanels(); addObject(b.dataset.addObject); })
 );
@@ -1130,6 +1125,64 @@ document.querySelectorAll('[data-add-object]').forEach(b =>
 document.querySelectorAll('[data-view]').forEach(b =>
   b.addEventListener('click', () => { closeAllPanels(); setCameraView(b.dataset.view); })
 );
+
+// ─── ACCORDION ────────────────────────────────────────────────────────────────
+
+const accPanel = document.getElementById('acc-panel');
+
+function showAccordion() { accPanel?.classList.remove('acc-hidden'); }
+function hideAccordion() { accPanel?.classList.add('acc-hidden'); }
+
+document.querySelectorAll('.acc-strip-tab').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const strip  = trigger.closest('.acc-strip');
+    const isOpen = strip.classList.contains('acc-open');
+    // Close all strips, then open the clicked one if it was closed
+    document.querySelectorAll('.acc-strip').forEach(s => {
+      s.classList.remove('acc-open');
+      s.querySelector('.acc-strip-tab').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      strip.classList.add('acc-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+const EQUIP_DEFAULT_ROLES = {
+  fresnel: 'key', monolight: 'key',
+  softbox: 'fill', octabox: 'fill',
+  parcan: 'rim', ledpanel: 'fill',
+};
+
+document.querySelectorAll('.fix-add').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const equip = btn.dataset.equip;
+    const entry = addLight(equip, { role: EQUIP_DEFAULT_ROLES[equip] || 'key' });
+    if (entry) selectLight(entry);
+  });
+});
+
+// ─── SETUP GUIDE ──────────────────────────────────────────────────────────────
+
+function updateSetupGuide() {
+  ['key', 'fill', 'rim'].forEach(role => {
+    const present = lights.some(l => l.role === role);
+    const item    = document.getElementById('guide-' + role);
+    const status  = document.getElementById('guide-' + role + '-status');
+    if (!item || !status) return;
+    item.classList.toggle('present', present);
+    status.textContent = present ? 'added' : 'missing';
+  });
+  const ratio    = getLightRatio();
+  const ratioRow = document.getElementById('guide-ratio-row');
+  const ratioVal = document.getElementById('guide-ratio-val');
+  if (ratioRow && ratioVal) {
+    ratioRow.style.display = ratio ? 'flex' : 'none';
+    ratioVal.textContent   = ratio ?? '—';
+  }
+}
 
 // ─── LIGHT PANEL STATIC BUTTONS ───────────────────────────────────────────────
 
