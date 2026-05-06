@@ -444,7 +444,7 @@ function computeIntensity(watts, equipType, beamAngleDeg) {
 // ─── EQUIPMENT DEFINITIONS ────────────────────────────────────────────────────
 
 const EQUIP_DEFS = {
-  monolight: { label:'Monolight',    lightType:'point', lampType:'flash',    poleH:2.0, defaultW:400, minW:100, maxW:800,  colorTemp:5600 },
+  monolight: { label:'Monolight',    lightType:'spot',  lampType:'flash',    poleH:2.0, defaultW:400, minW:100, maxW:800,  colorTemp:5600, beamAngle:140, minBeam:60, maxBeam:160, penumbra:0.25 },
   fresnel:   { label:'Fresnel Spot', lightType:'spot',  lampType:'tungsten', poleH:2.5, defaultW:650, minW:150, maxW:2000, colorTemp:3200, beamAngle:20, minBeam:10, maxBeam:50, penumbra:0.12 },
   parcan:    { label:'PAR Can',      lightType:'spot',  lampType:'tungsten', poleH:2.4, defaultW:575, minW:300, maxW:1000, colorTemp:3200, beamAngle:12, minBeam:5,  maxBeam:40, penumbra:0.03 },
   softbox:   { label:'Softbox',      lightType:'rect',  lampType:'flash',    poleH:2.0, defaultW:400, minW:100, maxW:800,  colorTemp:5500, srcW:0.9, srcH:1.2 },
@@ -613,10 +613,14 @@ function addLight(equipType, cfg = {}) {
   }
   app.root.addChild(lightEntity);
 
+  // Initial pan so the stand faces the scene centre (0, 0, 0)
+  const gx = cfg.x ?? rPos.x, gz = cfg.z ?? rPos.z;
+  const initPan = Math.atan2(-gx, gz) * (180 / Math.PI);
+
   const entry = {
     id, equipType, lightType: def.lightType,
     lightEntity, group, headEntity, enabled: true, role,
-    props: { watts, colorTemp, beamAngle, poleHeight: poleH, tiltY: 1.0, panAngle: 0 },
+    props: { watts, colorTemp, beamAngle, poleHeight: poleH, tiltY: 1.0, panAngle: initPan },
   };
   lights.push(entry);
   applyLightPhysics(entry);
