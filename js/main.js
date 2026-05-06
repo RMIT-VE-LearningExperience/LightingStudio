@@ -16,7 +16,8 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 app.scene.lighting.areaLightsEnabled = true;
 app.scene.toneMapping     = pc.TONEMAP_ACES;
 app.scene.gammaCorrection = pc.GAMMA_SRGB;
-app.scene.ambientLight    = new pc.Color(0.10, 0.10, 0.13);
+app.scene.ambientLight    = new pc.Color(0.22, 0.22, 0.26);
+app.scene.exposure        = 1.3;
 
 // Calibration: maps real lm → visually correct intensity in PlayCanvas
 const PHYS_SCALE = 0.0005;
@@ -84,10 +85,11 @@ const fabMat   = stdMat(0.95, 0.95, 0.95, 0.00, 0.05);  // white diffusion fabri
 
 // ─── STUDIO ROOM ──────────────────────────────────────────────────────────────
 
-const floorMat = stdMat(0.46, 0.44, 0.42, 0.0, 0.48);  // polished concrete
-const wallMat  = stdMat(0.90, 0.90, 0.88, 0.0, 0.06);  // studio white
-const ceilMat  = stdMat(0.78, 0.78, 0.76, 0.0, 0.04);  // off-white ceiling
-const cycMat   = stdMat(0.97, 0.97, 0.96, 0.0, 0.10);  // white seamless cyc
+const floorMat    = stdMat(0.46, 0.44, 0.42, 0.0, 0.52);  // polished concrete
+const wallMat     = stdMat(0.90, 0.90, 0.88, 0.0, 0.06);  // studio white
+const ceilMat     = stdMat(0.78, 0.78, 0.76, 0.0, 0.04);  // off-white ceiling
+const cycMat      = stdMat(0.97, 0.97, 0.96, 0.0, 0.10);  // white seamless cyc
+const gridRailMat = stdMat(0.08, 0.08, 0.10, 0.85, 0.70); // black anodised rail
 
 function addRoom() {
   function plane(name, mat, px, py, pz, rx, ry, rz, sx, sz) {
@@ -102,22 +104,61 @@ function addRoom() {
     e.tags.add('studio');
     app.root.addChild(e);
   }
-  plane('floor',    floorMat,  0, 0,   0,    0,   0, 0, 16, 14);
-  plane('backwall', cycMat,    0, 3.5, -6,  90,   0, 0, 16,  7);
-  plane('leftwall', wallMat,  -8, 3.5,  0,  90, -90, 0, 14,  7);
-  plane('rightwall',wallMat,   8, 3.5,  0,  90,  90, 0, 14,  7);
-  plane('ceiling',  ceilMat,   0, 7,    0, 180,   0, 0, 16, 14);
-  plane('cyc',      cycMat,    0, 0.7, -5.7, 45, 0,  0, 16,  2);
-  plane('cyc2',     cycMat,    0, 0.12, -4.85, 20, 0, 0, 16, 1.2);
+
+  plane('floor',     floorMat,  0, 0,   0,    0,   0, 0, 16, 14);
+  plane('backwall',  cycMat,    0, 3.5, -6,   90,   0, 0, 16,  7);
+  plane('leftwall',  wallMat,  -8, 3.5,  0,   90, -90, 0, 14,  7);
+  plane('rightwall', wallMat,   8, 3.5,  0,   90,  90, 0, 14,  7);
+  plane('ceiling',   ceilMat,   0, 7,    0,  180,   0, 0, 16, 14);
+
+  // Smooth cyclorama sweep: 5 graduated planes from floor to back wall
+  plane('cyc0', cycMat,  0, 0.04, -4.50,   8, 0, 0, 16, 1.0);
+  plane('cyc1', cycMat,  0, 0.20, -4.90,  22, 0, 0, 16, 1.1);
+  plane('cyc2', cycMat,  0, 0.55, -5.28,  40, 0, 0, 16, 1.2);
+  plane('cyc3', cycMat,  0, 1.10, -5.62,  58, 0, 0, 16, 1.3);
+  plane('cyc4', cycMat,  0, 1.88, -5.88,  74, 0, 0, 16, 1.3);
 }
 addRoom();
+
+// Ceiling lighting grid — horizontal rails running front-to-back and side-to-side
+function addCeilingGrid() {
+  const railY = 6.92;
+  const railW = 0.045, railH = 0.055;
+
+  // Front-to-back rails (running along Z axis)
+  for (const xPos of [-5, -2.5, 0, 2.5, 5]) {
+    const e = new pc.Entity('rail-z');
+    e.addComponent('render', { type: 'box' });
+    e.render.meshInstances[0].material = gridRailMat;
+    e.render.castShadows = true;
+    e.render.receiveShadows = false;
+    e.setLocalPosition(xPos, railY, -1);
+    e.setLocalScale(railW, railH, 12);
+    e.tags.add('studio');
+    app.root.addChild(e);
+  }
+
+  // Side-to-side rails (running along X axis)
+  for (const zPos of [-4, -1.5, 1, 3.5]) {
+    const e = new pc.Entity('rail-x');
+    e.addComponent('render', { type: 'box' });
+    e.render.meshInstances[0].material = gridRailMat;
+    e.render.castShadows = true;
+    e.render.receiveShadows = false;
+    e.setLocalPosition(0, railY, zPos);
+    e.setLocalScale(14, railH, railW);
+    e.tags.add('studio');
+    app.root.addChild(e);
+  }
+}
+addCeilingGrid();
 
 // Dim fill light so scene isn't completely black with no studio lights
 const fillLight = new pc.Entity('fill');
 fillLight.addComponent('light', {
   type:        'directional',
   color:       new pc.Color(0.78, 0.84, 1.0),
-  intensity:   0.55,
+  intensity:   0.80,
   castShadows: false,
 });
 fillLight.setLocalEulerAngles(-50, 30, 0);
@@ -157,105 +198,212 @@ function buildStand(poleH, group) {
   part('cylinder', group, silvMat, [0, poleH + 0.025, 0], null, [0.040, 0.050, 0.040]);
 }
 
+// ─── YOKE HELPER ──────────────────────────────────────────────────────────────
+// Round tube yoke arms with tilt-lock knob discs at each end.
+// armY = local Y for the arm pair; span = distance from centre to arm midpoint.
+
+function addYoke(g, armY, span) {
+  const y = armY ?? 0;
+  const s = span ?? 0.16;
+  // Tube arms (cylinder long-axis is Y; rotate [0,0,90] → long-axis becomes X)
+  part('cylinder', g, darkMat, [-s, y, 0], [0, 0, 90], [0.034, s * 2, 0.034]);
+  part('cylinder', g, darkMat, [ s, y, 0], [0, 0, 90], [0.034, s * 2, 0.034]);
+  // Tilt-lock knob discs at outer ends
+  part('cylinder', g, silvMat, [-(s * 2), y, 0], [0, 0, 90], [0.050, 0.022, 0.050]);
+  part('cylinder', g, silvMat, [ (s * 2), y, 0], [0, 0, 90], [0.050, 0.022, 0.050]);
+}
+
 // ─── EQUIPMENT HEADS ──────────────────────────────────────────────────────────
 
 function buildFlashHead(col) {
   const g = new pc.Entity('flashhead');
-  part('box', g, silvMat, [-0.10, 0, 0], null, [0.22, 0.025, 0.025]);
-  part('box', g, silvMat, [ 0.10, 0, 0], null, [0.22, 0.025, 0.025]);
-  part('cylinder', g, darkMat, [0, 0, 0.02], [90, 0, 0], [0.13, 0.28, 0.13]);
-  part('cone', g, stdMat(0.90, 0.86, 0.76, 0.99, 0.96),
-       [0, 0, 0.14], [-90, 0, 0], [0.32, 0.10, 0.32]);
-  part('sphere', g, makeEmissiveMat(col, 4), [0, 0, 0.22], null, [0.084, 0.084, 0.084], 'emissive');
+
+  addYoke(g, 0, 0.17);
+
+  // Main barrel body — wider than before (real monolight is a substantial cylinder)
+  part('cylinder', g, darkMat, [0, 0, 0.01], [90, 0, 0], [0.18, 0.22, 0.18]);
+
+  // Ventilation band near rear
+  part('cylinder', g, darkMat, [0, 0, -0.06], [90, 0, 0], [0.196, 0.030, 0.196]);
+
+  // Front housing rim ring (silver trim)
+  part('cylinder', g, silvMat, [0, 0, 0.115], [90, 0, 0], [0.22, 0.016, 0.22]);
+
+  // Reflector bowl — wide & shallow (monolight style, warm chrome)
+  part('cone', g, stdMat(0.92, 0.88, 0.78, 0.99, 0.95), [0, 0, 0.175], [-90, 0, 0], [0.44, 0.10, 0.44]);
+
+  // Inner reflector dish (deeper warm gold)
+  part('cone', g, stdMat(0.96, 0.94, 0.86, 0.99, 0.94), [0, 0, 0.155], [-90, 0, 0], [0.22, 0.07, 0.22]);
+
+  // Flash tube ring — emissive (colour temp updates target this)
+  part('cylinder', g, makeEmissiveMat(col, 5), [0, 0, 0.192], [90, 0, 0], [0.050, 0.012, 0.050], 'emissive');
+
+  // Sync + power ports on rear housing
+  part('cylinder', g, silvMat, [ 0.06, -0.04, -0.10], [90, 0, 0], [0.020, 0.018, 0.020]);
+  part('cylinder', g, silvMat, [-0.04, -0.04, -0.10], [90, 0, 0], [0.020, 0.018, 0.020]);
+
   return g;
 }
 
 function buildFresnel(col) {
   const g = new pc.Entity('fresnel');
-  part('box', g, silvMat, [-0.13, 0, 0], null, [0.28, 0.022, 0.022]);
-  part('box', g, silvMat, [ 0.13, 0, 0], null, [0.28, 0.022, 0.022]);
-  part('cylinder', g, darkMat, [0, 0, -0.01], [90, 0, 0], [0.19, 0.30, 0.19]);
-  // Barn doors
-  part('box', g, darkMat, [0,  0.09, 0.17], null, [0.22, 0.007, 0.13]);
-  part('box', g, darkMat, [0, -0.09, 0.17], null, [0.22, 0.007, 0.13]);
-  part('box', g, darkMat, [ 0.10, 0, 0.17], null, [0.007, 0.22, 0.13]);
-  part('box', g, darkMat, [-0.10, 0, 0.17], null, [0.007, 0.22, 0.13]);
-  // Fresnel lens disc
+
+  addYoke(g, 0, 0.17);
+
+  // Main housing cylinder
+  part('cylinder', g, darkMat, [0, 0, -0.01], [90, 0, 0], [0.20, 0.32, 0.20]);
+
+  // Front housing rim ring
+  part('cylinder', g, silvMat, [0, 0, 0.150], [90, 0, 0], [0.24, 0.016, 0.24]);
+
+  // Fresnel lens (semi-transparent, layered rings for stepped glass look)
   const lensMat = stdMat(0.78, 0.85, 0.90, 0, 0.95);
-  lensMat.blendType = pc.BLEND_NORMAL;
-  lensMat.opacity = 0.40;
+  lensMat.blendType  = pc.BLEND_NORMAL;
+  lensMat.opacity    = 0.45;
   lensMat.depthWrite = false;
   lensMat.update();
-  part('cylinder', g, lensMat, [0, 0, 0.16], [90, 0, 0], [0.164, 0.010, 0.164]);
+  part('cylinder', g, lensMat, [0, 0, 0.156], [90, 0, 0], [0.178, 0.010, 0.178]);
+  part('cylinder', g, lensMat, [0, 0, 0.160], [90, 0, 0], [0.122, 0.007, 0.122]);
+  part('cylinder', g, lensMat, [0, 0, 0.163], [90, 0, 0], [0.068, 0.005, 0.068]);
+
+  // Modelling bulb
   part('sphere', g, makeEmissiveMat(col, 5), [0, 0, 0.06], null, [0.060, 0.060, 0.060], 'emissive');
+
+  // Barn doors — flat flaps angled open ~28° so they look functional, not like walls
+  part('box', g, darkMat, [0,  0.130, 0.265], [-28, 0,   0], [0.22, 0.008, 0.19]);  // top
+  part('box', g, darkMat, [0, -0.130, 0.265], [ 28, 0,   0], [0.22, 0.008, 0.19]);  // bottom
+  part('box', g, darkMat, [-0.125, 0, 0.265], [  0, 0,  28], [0.008, 0.22, 0.19]);  // left
+  part('box', g, darkMat, [ 0.125, 0, 0.265], [  0, 0, -28], [0.008, 0.22, 0.19]);  // right
+
+  // Hinge pins at barn door roots (4 corners)
+  part('cylinder', g, silvMat, [-0.098,  0.100, 0.163], null, [0.012, 0.042, 0.012]);
+  part('cylinder', g, silvMat, [ 0.098,  0.100, 0.163], null, [0.012, 0.042, 0.012]);
+  part('cylinder', g, silvMat, [-0.098, -0.100, 0.163], null, [0.012, 0.042, 0.012]);
+  part('cylinder', g, silvMat, [ 0.098, -0.100, 0.163], null, [0.012, 0.042, 0.012]);
+
+  // Carry handle on top of housing
+  part('cylinder', g, darkMat, [0, 0.128, -0.04], [0, 0, 90], [0.022, 0.14, 0.022]);
+  part('sphere',   g, darkMat, [-0.070, 0.128, -0.04], null, [0.026, 0.026, 0.026]);
+  part('sphere',   g, darkMat, [ 0.070, 0.128, -0.04], null, [0.026, 0.026, 0.026]);
+
   return g;
 }
 
 function buildParSpot(col) {
   const g = new pc.Entity('parcan');
-  part('box', g, silvMat, [-0.12, 0, 0], null, [0.26, 0.025, 0.025]);
-  part('box', g, silvMat, [ 0.12, 0, 0], null, [0.26, 0.025, 0.025]);
-  part('cylinder', g, darkMat, [0, -0.15, 0], null, [0.19, 0.28, 0.19]);
-  part('cone', g, stdMat(0.86, 0.86, 0.86, 0.99, 0.95),
-       [0, -0.31, 0], [180, 0, 0], [0.44, 0.20, 0.44]);
+
+  // Yoke at body centre of gravity (real PAR cans yoke at balance point)
+  addYoke(g, -0.12, 0.16);
+
+  // Main cylindrical housing — wider, more PAR-can proportioned
+  part('cylinder', g, darkMat, [0, -0.14, 0], null, [0.24, 0.26, 0.24]);
+
+  // Top mounting cap
+  part('cylinder', g, darkMat, [0, 0.005, 0], null, [0.25, 0.018, 0.25]);
+
+  // Front opening rim ring
+  part('cylinder', g, silvMat, [0, -0.278, 0], null, [0.26, 0.018, 0.26]);
+
+  // Parabolic reflector bowl (wide, polished chrome)
+  part('cone', g, stdMat(0.88, 0.88, 0.86, 0.99, 0.96), [0, -0.292, 0], [180, 0, 0], [0.52, 0.25, 0.52]);
+
+  // PAR lamp (emissive sphere inside reflector)
+  part('sphere', g, makeEmissiveMat(col, 6), [0, -0.20, 0], null, [0.062, 0.062, 0.062], 'emissive');
+
+  // Gel frame retaining tabs at front rim (4 corners)
   for (let i = 0; i < 4; i++) {
     const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    part('box', g, darkMat,
-      [Math.cos(a) * 0.20, -0.43, Math.sin(a) * 0.20],
-      [0, (i / 4) * 360 + 45, i % 2 === 0 ? 16 : -16],
-      [0.19, 0.014, 0.095]);
+    part('box', g, silvMat,
+      [Math.cos(a) * 0.138, -0.296, Math.sin(a) * 0.138],
+      null, [0.022, 0.022, 0.016]);
   }
-  part('sphere', g, makeEmissiveMat(col, 5), [0, -0.22, 0], null, [0.076, 0.076, 0.076], 'emissive');
+
   return g;
 }
 
 function buildSoftbox(col) {
   const g = new pc.Entity('softbox');
-  part('cylinder', g, silvMat, [0, 0, 0], [90, 0, 0], [0.22, 0.014, 0.22]);
-  part('box', g, fabMat, [0,  0.41, -0.16], [14, 0, 0], [0.82, 0.012, 0.32]);
-  part('box', g, fabMat, [0, -0.41, -0.16], [-14, 0, 0], [0.82, 0.012, 0.32]);
-  part('box', g, fabMat, [ 0.41, 0, -0.16], [0, 0,  14], [0.012, 0.82, 0.32]);
-  part('box', g, fabMat, [-0.41, 0, -0.16], [0, 0, -14], [0.012, 0.82, 0.32]);
-  part('box', g, darkMat, [0, 0, -0.32], null, [0.86, 0.86, 0.06]);
+
+  // Speed ring — prominent silver disc
+  part('cylinder', g, silvMat, [0, 0, 0],     [90, 0, 0], [0.30, 0.022, 0.30]);
+  part('cylinder', g, darkMat, [0, 0, 0.014], [90, 0, 0], [0.14, 0.036, 0.14]);
+
+  // Side panels: each goes from speedring edge (r≈0.14, z=0) to front face edge (r=0.38, z=-0.352)
+  // Centre of each panel: (0, ±0.26, -0.176); slope angle ≈ 34° gives exact back/front coordinates.
+  part('box', g, fabMat, [0,  0.260, -0.176], [ 34, 0,   0], [0.76, 0.012, 0.427]);  // top
+  part('box', g, fabMat, [0, -0.260, -0.176], [-34, 0,   0], [0.76, 0.012, 0.427]);  // bottom
+  part('box', g, fabMat, [-0.260, 0, -0.176], [  0, 34,  0], [0.012, 0.76, 0.427]);  // left
+  part('box', g, fabMat, [ 0.260, 0, -0.176], [  0, -34, 0], [0.012, 0.76, 0.427]);  // right
+
+  // Black outer frame around front diffuser
+  part('box', g, darkMat, [0, 0, -0.345], null, [0.86, 0.86, 0.030]);
+
+  // Inner baffle (second diffusion layer inside the box)
+  part('plane', g, fabMat, [0, 0, -0.318], [90, 0, 0], [0.58, 1, 0.58]);
+
+  // Front diffusion panel (emissive)
   part('plane', g, makeEmissiveMat(col, 1.2), [0, 0, -0.352], [90, 0, 0], [0.76, 1, 0.76], 'emissive');
+
   return g;
 }
 
 function buildOctabox(col) {
   const g = new pc.Entity('octabox');
-  part('cylinder', g, silvMat, [0, 0, 0], [90, 0, 0], [0.20, 0.028, 0.20]);
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    const panel = new pc.Entity('oct-panel');
-    panel.addComponent('render', { type: 'plane' });
-    panel.render.meshInstances[0].material = fabMat;
-    panel.render.castShadows = false;
-    panel.setLocalPosition(Math.cos(a) * 0.48, Math.sin(a) * 0.48, -0.30);
-    panel.setLocalEulerAngles(90, 0, i * 45);
-    panel.setLocalScale(0.58, 1, 0.58);
-    g.addChild(panel);
-  }
-  part('cylinder', g, darkMat, [0, 0, -0.62], [90, 0, 0], [1.44, 0.025, 1.44]);
-  part('plane', g, makeEmissiveMat(col, 1.0), [0, 0, -0.61], [90, 0, 0], [1.32, 1, 1.32], 'emissive');
+
+  // Speed ring
+  part('cylinder', g, silvMat, [0, 0, 0],     [90, 0, 0], [0.30, 0.022, 0.30]);
+  part('cylinder', g, darkMat, [0, 0, 0.014], [90, 0, 0], [0.14, 0.036, 0.14]);
+
+  // Outer body — single cone tapering from speedring (z=0, r≈0) to front face (z=-0.62, r=0.72)
+  // Cone tip at z=0, base at z=-0.62; after Rx(90°) local +Y maps to world +Z.
+  part('cone', g, darkMat, [0, 0, -0.31], [90, 0, 0], [1.44, 0.62, 1.44]);
+
+  // Front outer rim ring
+  part('cylinder', g, silvMat, [0, 0, -0.624], [90, 0, 0], [1.48, 0.016, 1.48]);
+
+  // Inner baffle diffuser
+  part('plane', g, fabMat, [0, 0, -0.600], [90, 0, 0], [1.08, 1, 1.08]);
+
+  // Front diffusion panel (emissive)
+  part('plane', g, makeEmissiveMat(col, 1.0), [0, 0, -0.610], [90, 0, 0], [1.32, 1, 1.32], 'emissive');
+
   return g;
 }
 
 function buildLedPanel(col) {
   const g = new pc.Entity('ledpanel');
-  part('box', g, silvMat, [-0.09, 0, 0], null, [0.20, 0.020, 0.020]);
-  part('box', g, silvMat, [ 0.09, 0, 0], null, [0.20, 0.020, 0.020]);
+
+  addYoke(g, 0, 0.18);
+
+  // Main housing body
   part('box', g, darkMat, [0, 0, -0.02], null, [0.58, 0.28, 0.042]);
+
+  // Aluminium frame rails (4 sides)
   const fMat = stdMat(0.72, 0.72, 0.72, 0.94, 0.86);
-  part('box', g, fMat, [0,  0.148, 0], null, [0.60, 0.016, 0.052]);
-  part('box', g, fMat, [0, -0.148, 0], null, [0.60, 0.016, 0.052]);
-  part('box', g, fMat, [ 0.298, 0, 0], null, [0.016, 0.28, 0.052]);
-  part('box', g, fMat, [-0.298, 0, 0], null, [0.016, 0.28, 0.052]);
+  part('box', g, fMat, [0,  0.148, 0], null, [0.60, 0.016, 0.054]);
+  part('box', g, fMat, [0, -0.148, 0], null, [0.60, 0.016, 0.054]);
+  part('box', g, fMat, [ 0.298, 0, 0], null, [0.016, 0.28, 0.054]);
+  part('box', g, fMat, [-0.298, 0, 0], null, [0.016, 0.28, 0.054]);
+
+  // LED chip grid (5 rows × 10 columns)
   const ledMat = makeEmissiveMat(col, 2.5);
   for (let r = 0; r < 5; r++) for (let c = 0; c < 10; c++) {
     part('box', g, ledMat,
       [-0.245 + c * 0.054, -0.10 + r * 0.050, 0.013], null, [0.036, 0.026, 0.006]);
   }
+
+  // Front diffuser panel (emissive — colour temp updates target this)
   part('plane', g, makeEmissiveMat(col, 1.0), [0, 0, 0.026], [90, 0, 0], [0.54, 1, 0.24], 'emissive');
+
+  // Rear fan / vent detail
+  part('cylinder', g, darkMat, [0.18, 0.05, -0.046], [90, 0, 0], [0.072, 0.012, 0.072]);
+  part('cylinder', g, darkMat, [0.18, 0.05, -0.046], [90, 0, 0], [0.042, 0.016, 0.042]);
+
+  // Rear carry handle bar
+  part('cylinder', g, darkMat, [0, 0.175, -0.038], [0, 0, 90], [0.022, 0.22, 0.022]);
+  part('sphere',   g, darkMat, [-0.11, 0.175, -0.038], null, [0.026, 0.026, 0.026]);
+  part('sphere',   g, darkMat, [ 0.11, 0.175, -0.038], null, [0.026, 0.026, 0.026]);
+
   return g;
 }
 
@@ -1309,7 +1457,7 @@ document.getElementById('student-name').addEventListener('keydown', e => {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
-addLight('fresnel', { role: 'key' });
+addLight('monolight', { role: 'key' });
 
 const initSphere = addObject('sphere');
 if (initSphere) { const p = initSphere.getLocalPosition(); initSphere.setLocalPosition(-0.3, p.y, 0); }
@@ -1340,17 +1488,33 @@ app.on('update', () => {
     entry.lightEntity.setPosition(headPos);
 
     // Apply pan rotation to the physical stand
-    entry.group.setLocalEulerAngles(0, entry.props.panAngle ?? 0, 0);
+    const panAngle = entry.props.panAngle ?? 0;
+    entry.group.setLocalEulerAngles(0, panAngle, 0);
 
     // Aim toward tiltY target — PC spot/area lights emit along local -Y
-    const tiltY = entry.props.tiltY ?? 1.0;
+    const tiltY  = entry.props.tiltY ?? 1.0;
+    const target = new pc.Vec3(0, tiltY, 0);
+    const dir    = new pc.Vec3().sub2(target, headPos).normalize();
+    const tilt   = Math.acos(Math.max(-1, Math.min(1, -dir.y))) * (180 / Math.PI);
+    const pan    = Math.atan2(dir.x, -dir.z) * (180 / Math.PI);
+
     if (entry.lightType === 'spot' || entry.lightType === 'rect') {
-      const target = new pc.Vec3(0, tiltY, 0);
-      const dir = new pc.Vec3().sub2(target, headPos).normalize();
-      const tilt = Math.acos(Math.max(-1, Math.min(1, -dir.y))) * (180 / Math.PI);
-      const pan  = Math.atan2(dir.x, -dir.z) * (180 / Math.PI);
       entry.lightEntity.setLocalEulerAngles(tilt, pan, 0);
     }
+
+    // Tilt head model to visually match aim direction.
+    // pan - panAngle corrects for stand orientation vs computed beam direction.
+    // headRx offsets for each equipment's local "forward" axis vs light's -Y emit axis.
+    const panDelta = pan - panAngle;
+    let headRx;
+    if (entry.equipType === 'parcan') {
+      headRx = -tilt;                         // PAR can forward = -Y local
+    } else if (entry.lightType === 'rect') {
+      headRx = tilt - 90;                     // softbox/octabox forward = -Z local
+    } else {
+      headRx = 90 - tilt;                     // monolight/fresnel/led forward = +Z local
+    }
+    entry.headEntity.setLocalEulerAngles(headRx, panDelta, 0);
   });
 
   positionTransformBox();
