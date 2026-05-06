@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lighting Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/LightingStudio/assets/index-D4WJyvdI.js"></script>
+  <link rel="stylesheet" crossorigin href="/LightingStudio/assets/index-CMXxS5K5.css">
+</head>
+<body>
+
+  <!-- ── Screen-reader live region ────────────────────────────────── -->
+  <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <canvas id="canvas" aria-label="3D lighting studio scene" role="img"></canvas>
+
+  <!-- ══ WELCOME SCREEN ══════════════════════════════════════════════ -->
+  <div id="welcome-screen" role="dialog" aria-modal="true" aria-labelledby="ws-title">
+    <div class="ws-orbs" aria-hidden="true">
+      <div class="ws-orb" style="--c:124,110,245;--x:8%;--y:12%;--s:500px;--dur:11s;--delay:0s"></div>
+      <div class="ws-orb" style="--c:110,198,245;--x:78%;--y:60%;--s:380px;--dur:14s;--delay:-4s"></div>
+      <div class="ws-orb" style="--c:255,107,157;--x:55%;--y:82%;--s:300px;--dur:9s;--delay:-7s"></div>
+      <div class="ws-orb" style="--c:255,209,102;--x:90%;--y:8%;--s:260px;--dur:12s;--delay:-2s"></div>
+    </div>
+
+    <div class="ws-card" role="main">
+
+      <!-- ── Brand header ──────────────────────────────────────────── -->
+      <div class="ws-header">
+        <div class="ws-logo-wrap" aria-hidden="true">
+          <svg class="ws-logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="9" stroke="currentColor" stroke-width="2.2"/>
+            <line x1="24" y1="3"  x2="24" y2="11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="24" y1="37" x2="24" y2="45" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="3"  y1="24" x2="11" y2="24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="37" y1="24" x2="45" y2="24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="8.5"  y1="8.5"  x2="14.2" y2="14.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="33.8" y1="33.8" x2="39.5" y2="39.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="39.5" y1="8.5"  x2="33.8" y2="14.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <line x1="14.2" y1="33.8" x2="8.5"  y2="39.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="ws-title" id="ws-title">Lighting Studio</h1>
+        <p class="ws-sub">An interactive 3D environment for learning professional lighting — for screen, stage and photography.</p>
+      </div>
+
+      <!-- ── Learning outcomes grid ────────────────────────────────── -->
+      <div class="ws-grid" aria-label="What you will explore">
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#FFD166">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M9 12c0-1.66 1.34-3 3-3" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h3>Light Direction</h3>
+          <p>Discover how angle, distance and placement sculpt shape, shadow and depth on a subject.</p>
+        </div>
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#6EC6F5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M12 18a6 6 0 0 0 0-12v12z" fill="currentColor" opacity=".25"/>
+              <circle cx="12" cy="12" r="6"/>
+              <path d="M3 12h1M20 12h1M12 3v1M12 20v1" stroke-width="1.4"/>
+              <path d="M7 7l.7.7M16.3 16.3l.7.7M7 17l.7-.7M16.3 7.7l.7-.7" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h3>Colour Temperature</h3>
+          <p>Explore the Kelvin scale — from warm tungsten glow to cool daylight — and how it sets mood and atmosphere.</p>
+        </div>
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#B69CF5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <rect x="3" y="7" width="5" height="10" rx="1.5"/>
+              <rect x="9.5" y="5" width="5" height="14" rx="1.5"/>
+              <rect x="16" y="8" width="5" height="8" rx="1.5"/>
+              <line x1="5.5" y1="17" x2="5.5" y2="20" stroke-width="1.4"/>
+              <line x1="12" y1="19" x2="12" y2="20" stroke-width="1.4"/>
+              <line x1="18.5" y1="16" x2="18.5" y2="20" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h3>Three-Point Setup</h3>
+          <p>Build a classic key, fill and rim configuration — the foundation of professional portrait and product lighting.</p>
+        </div>
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#FF6B9D">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M4 6h3l2-3h6l2 3h3v12H4V6z"/>
+              <circle cx="12" cy="13" r="3.5"/>
+              <circle cx="12" cy="13" r="1.2" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Equipment Operation</h3>
+          <p>Operate fresnel spots, softboxes, octaboxes, parcans and LED panels — understanding each unit's output and character.</p>
+        </div>
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#FF9947">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="9" cy="12" r="5"/>
+              <circle cx="15" cy="12" r="5"/>
+              <path d="M12 8.5v7" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <h3>Light Quality</h3>
+          <p>Compare hard and soft sources — inverse square falloff, shadow edge sharpness, and softness from modifier size.</p>
+        </div>
+
+        <div class="ws-card-item">
+          <div class="ws-item-icon" style="--ic:#7ECAC9">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <line x1="12" y1="3" x2="12" y2="6"/>
+              <path d="M5 6h14"/>
+              <path d="M7 6l-3 9h5.5l2.5-4 2.5 4H20l-3-9"/>
+              <line x1="12" y1="19" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3>Contrast Ratio</h3>
+          <p>Control the key-to-fill ratio to dial in mood — from flat, even illumination to dramatic high-contrast looks.</p>
+        </div>
+
+      </div>
+
+      <!-- ── CTA ──────────────────────────────────────────────────── -->
+      <button id="btn-enter-studio" class="ws-enter-btn" autofocus>
+        <span>Enter Studio</span>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 10h12M11 5l5 5-5 5"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ══ SCREENSHOT DIALOG ═══════════════════════════════════════════ -->
+  <div id="screenshot-dialog" class="dialog-overlay hidden"
+       role="dialog" aria-modal="true" aria-labelledby="sd-title">
+    <div class="dialog-card">
+      <div class="dialog-icon" aria-hidden="true">📸</div>
+      <h2 id="sd-title" class="dialog-title">Save Your Setup</h2>
+      <p class="dialog-desc">Enter your name — it will be used as the filename so you can submit this as part of your assignment.</p>
+      <label for="student-name" class="sr-only">Your full name</label>
+      <input type="text" id="student-name" class="dialog-input"
+             placeholder="Your full name" autocomplete="name" maxlength="60">
+      <div class="dialog-actions">
+        <button id="sd-cancel" class="tut-ghost-btn">Cancel</button>
+        <button id="sd-save"   class="tut-primary-btn">Download Screenshot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Always-visible studio HUD (top-right) ──────────────────── -->
+  <div id="hud" aria-label="Studio controls">
+    <div class="hud-label">Studio</div>
+    <label class="hud-row">
+      <span>Exposure</span>
+      <div class="hud-range">
+        <input type="range" class="slider" id="exposure"
+               min="0.1" max="2" step="0.05" value="0.75"
+               aria-label="Exposure" aria-valuetext="0.75">
+        <span class="rval" aria-hidden="true">0.75</span>
+      </div>
+    </label>
+    <div class="hud-row hud-row-btn">
+      <button id="studio-lights-btn" class="hud-toggle" aria-pressed="true">
+        Lights ON
+      </button>
+    </div>
+    <div class="hud-row hud-row-btn">
+      <button id="tb-views-btn" class="hud-btn" aria-expanded="false" aria-haspopup="dialog">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        Reset View
+      </button>
+    </div>
+    <div class="hud-row hud-row-btn">
+      <button id="hud-help-btn" class="hud-btn" aria-expanded="false" aria-haspopup="dialog">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Help
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Light popup panel (left, slides in) ────────────────────── -->
+  <div id="light-panel" role="complementary" aria-label="Light controls">
+    <div id="lp-accent-bar" aria-hidden="true"></div>
+    <div id="lp-header">
+      <div id="lp-title-wrap">
+        <div id="lp-dot" aria-hidden="true"></div>
+        <div>
+          <div id="lp-name">Key Light</div>
+          <div id="lp-role-badge" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div id="lp-header-btns">
+        <button id="lp-return" class="lp-hbtn" aria-label="Return to studio">← Return</button>
+        <button id="lp-close"  class="lp-hbtn lp-hbtn-x" aria-label="Close light panel">×</button>
+      </div>
+    </div>
+    <div id="lp-desc" aria-live="polite"></div>
+    <div id="lp-body" aria-label="Light settings"></div>
+    <div id="lp-physics" aria-label="Physics readout">
+      <div class="phys-heading">Physics</div>
+      <div class="phys-grid">
+        <div class="phys-cell">
+          <span class="phys-lbl">Shadow</span>
+          <span class="phys-val" id="phys-shadow">—</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Softness</span>
+          <span class="phys-val" id="phys-softness">—</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Falloff</span>
+          <span class="phys-val" id="phys-falloff">1/r²</span>
+        </div>
+        <div class="phys-cell">
+          <span class="phys-lbl">Key:Fill</span>
+          <span class="phys-val" id="phys-ratio">—</span>
+        </div>
+      </div>
+    </div>
+    <div id="lp-footer">
+      <button id="lp-toggle" class="lp-btn">Turn OFF</button>
+      <button id="lp-delete" class="lp-btn lp-btn-danger">Delete Light</button>
+    </div>
+  </div>
+
+  <!-- ── Object popup panel (top-left, small) ───────────────────── -->
+  <div id="object-panel" role="complementary" aria-label="Object controls">
+    <div id="op-header">
+      <span>Object</span>
+      <button id="op-close" aria-label="Close object panel">×</button>
+    </div>
+    <div id="op-body">
+
+      <details class="op-advanced">
+        <summary class="op-advanced-toggle">Advanced ▾</summary>
+
+        <div class="op-section-label">Position</div>
+        <label class="op-row">
+          <span>Left / Right</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-x" min="-5" max="5" step="0.1" value="0" aria-label="Left right position">
+            <span class="rval" id="obj-pos-x-val">0.0</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Height</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-y" min="0" max="4" step="0.05" value="0.6" aria-label="Height">
+            <span class="rval" id="obj-pos-y-val">0.6</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Fore / Back</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-pos-z" min="-4" max="4" step="0.1" value="0" aria-label="Fore back position">
+            <span class="rval" id="obj-pos-z-val">0.0</span>
+          </div>
+        </label>
+
+        <div class="op-section-label">Transform</div>
+        <label class="op-row">
+          <span>Spin</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-rot-y" min="-180" max="180" step="1" value="0" aria-label="Rotation">
+            <span class="rval" id="obj-rot-y-val">0°</span>
+          </div>
+        </label>
+        <label class="op-row">
+          <span>Size</span>
+          <div class="op-range">
+            <input type="range" class="slider" id="obj-scale" min="0.2" max="3" step="0.05" value="1" aria-label="Size">
+            <span class="rval" id="obj-scale-val">1.0</span>
+          </div>
+        </label>
+      </details>
+
+      <div class="op-section-label">Material</div>
+      <label class="op-row">
+        <span>Color</span>
+        <input type="color" id="obj-color" value="#cccccc" aria-label="Object colour">
+      </label>
+      <label class="op-row">
+        <span>Roughness</span>
+        <div class="op-range">
+          <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
+          <span class="rval" aria-hidden="true">0.50</span>
+        </div>
+      </label>
+      <label class="op-row">
+        <span>Metalness</span>
+        <div class="op-range">
+          <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
+          <span class="rval" aria-hidden="true">0.05</span>
+        </div>
+      </label>
+
+      <button id="delete-selected" class="op-danger">Delete Object</button>
+    </div>
+  </div>
+
+  <!-- ── Floating panels (open above toolbar) ──────────────────── -->
+
+  <div id="tb-lights-panel" class="tb-panel hidden" role="dialog" aria-label="Add a light">
+    <div class="tb-panel-title">Add Light</div>
+    <div class="tb-panel-lights">
+      <button class="lt-btn" data-role="key"        style="--lc:#FFD166" aria-label="Add Key Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Key Light</span>
+        <span class="lt-sub">Primary source</span>
+      </button>
+      <button class="lt-btn" data-role="fill"       style="--lc:#6EC6F5" aria-label="Add Fill Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Fill Light</span>
+        <span class="lt-sub">Soften shadows</span>
+      </button>
+      <button class="lt-btn" data-role="rim"        style="--lc:#FF6B9D" aria-label="Add Back Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Back Light</span>
+        <span class="lt-sub">Edge separation</span>
+      </button>
+      <button class="lt-btn" data-role="hair"       style="--lc:#7ECAC9" aria-label="Add Hair Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Hair Light</span>
+        <span class="lt-sub">Depth &amp; sheen</span>
+      </button>
+      <button class="lt-btn" data-role="background" style="--lc:#B69CF5" aria-label="Add Background Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">BG Light</span>
+        <span class="lt-sub">Light the backdrop</span>
+      </button>
+      <button class="lt-btn" data-role="practical"  style="--lc:#FF9947" aria-label="Add Practical Light">
+        <span class="lt-pip" aria-hidden="true"></span>
+        <span class="lt-name">Practical</span>
+        <span class="lt-sub">Visible in-frame</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="tb-objects-panel" class="tb-panel hidden" role="dialog" aria-label="Add an object">
+    <div class="tb-panel-title">Add Object</div>
+    <div class="tb-panel-objects">
+      <button class="tb-obj-card" data-add-object="sphere"   aria-label="Add sphere">
+        <span class="tb-obj-icon">●</span><span>Sphere</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="box"      aria-label="Add box">
+        <span class="tb-obj-icon">■</span><span>Box</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="cylinder" aria-label="Add cylinder">
+        <span class="tb-obj-icon">▬</span><span>Cylinder</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="cone"     aria-label="Add cone">
+        <span class="tb-obj-icon">▲</span><span>Cone</span>
+      </button>
+      <button class="tb-obj-card" data-add-object="torus"    aria-label="Add torus">
+        <span class="tb-obj-icon">◎</span><span>Torus</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="tb-views-panel" class="tb-panel hidden" role="dialog" aria-label="Reset camera view">
+    <div class="tb-panel-title">Reset View</div>
+    <div class="tb-panel-views">
+      <button class="tb-view-card" data-view="front"   aria-label="Front view">
+        <span class="tb-view-icon">↑</span><span>Front</span>
+      </button>
+      <button class="tb-view-card" data-view="top"     aria-label="Top view">
+        <span class="tb-view-icon">⊙</span><span>Top</span>
+      </button>
+      <button class="tb-view-card" data-view="quarter" aria-label="Three-quarter view">
+        <span class="tb-view-icon">⤢</span><span>3/4</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="hud-help-panel" class="tb-panel hidden" role="dialog" aria-label="Controls reference">
+    <div class="tb-panel-title">Controls</div>
+    <div class="help-rows">
+      <div class="help-row"><span class="help-key">Drag scene</span><span class="help-desc">Orbit camera</span></div>
+      <div class="help-row"><span class="help-key">Scroll</span><span class="help-desc">Zoom in / out</span></div>
+      <div class="help-row"><span class="help-key">Drag light</span><span class="help-desc">Move on floor</span></div>
+      <div class="help-row"><span class="help-key">Drag ↻</span><span class="help-desc">Rotate</span></div>
+      <div class="help-row"><span class="help-key">Drag corner</span><span class="help-desc">Scale object</span></div>
+      <div class="help-row"><span class="help-key">Del</span><span class="help-desc">Delete selected</span></div>
+      <div class="help-row"><span class="help-key">Esc</span><span class="help-desc">Deselect</span></div>
+    </div>
+  </div>
+
+  <!-- ── Bottom toolbar ─────────────────────────────────────────── -->
+  <nav id="toolbar" aria-label="Studio toolbar">
+    <button id="tb-lights-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      Lights
+    </button>
+
+    <div class="tb-sep" aria-hidden="true"></div>
+
+    <button id="tb-objects-btn" class="tb-cat-btn" aria-expanded="false" aria-haspopup="dialog">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+      </svg>
+      Objects
+    </button>
+
+    <button id="vr-btn" aria-label="Enter VR mode" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M2 9a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9z"/>
+        <circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/>
+      </svg>
+      VR
+    </button>
+    <button id="screenshot-btn" aria-label="Take screenshot for assignment submission">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Shot
+    </button>
+  </nav>
+
+  <!-- ── Free Transform Overlay ───────────────────────────────── -->
+  <div id="transform-box" class="hidden" aria-hidden="true">
+    <div id="ft-bbox">
+      <div class="ft-corner" data-corner="nw"></div>
+      <div class="ft-corner" data-corner="ne"></div>
+      <div class="ft-corner" data-corner="sw"></div>
+      <div class="ft-corner" data-corner="se"></div>
+      <div id="ft-rot-line"></div>
+      <div id="ft-rot-handle" title="Rotate">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7 2 A5 5 0 1 0 12 7" stroke="#1a1829" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <polygon points="12,4 14,7 10,7" fill="#1a1829"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Hints ──────────────────────────────────────────────────── -->
+  <div id="hints" aria-label="Keyboard shortcuts" role="note">
+    Drag box · Move &nbsp;·&nbsp; Drag corner · Scale &nbsp;·&nbsp; Drag ↻ · Rotate &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
+  </div>
+
+</body>
+</html>
