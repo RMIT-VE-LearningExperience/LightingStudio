@@ -1503,18 +1503,16 @@ app.on('update', () => {
     }
 
     // Tilt head model to visually match aim direction.
-    // pan - panAngle corrects for stand orientation vs computed beam direction.
-    // headRx offsets for each equipment's local "forward" axis vs light's -Y emit axis.
-    const panDelta = pan - panAngle;
+    // Group already handles pan; head only needs the X tilt in group-local space.
     let headRx;
     if (entry.equipType === 'parcan') {
-      headRx = -tilt;                         // PAR can forward = -Y local
+      headRx = -tilt;            // PAR can forward = -Y local (hangs down by default)
     } else if (entry.lightType === 'rect') {
-      headRx = tilt - 90;                     // softbox/octabox forward = -Z local
+      headRx = tilt - 90;        // softbox/octabox forward = -Z local
     } else {
-      headRx = 90 - tilt;                     // monolight/fresnel/led forward = +Z local
+      headRx = 90 - tilt;        // monolight/fresnel/led forward = +Z local
     }
-    entry.headEntity.setLocalEulerAngles(headRx, panDelta, 0);
+    entry.headEntity.setLocalEulerAngles(headRx, 0, 0);
   });
 
   positionTransformBox();
