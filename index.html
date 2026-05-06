@@ -80,7 +80,7 @@
             </svg>
           </div>
           <h3>Light Direction</h3>
-          <p>Discover how angle, distance and placement sculpt shape, shadow and depth on a subject.</p>
+          <p>Angle, distance and placement sculpt shape, shadow and depth.</p>
         </div>
 
         <div class="ws-card-item">
@@ -93,7 +93,7 @@
             </svg>
           </div>
           <h3>Colour Temperature</h3>
-          <p>Explore the Kelvin scale — from warm tungsten glow to cool daylight — and how it sets mood and atmosphere.</p>
+          <p>From warm tungsten to cool daylight — how Kelvin shifts mood and atmosphere.</p>
         </div>
 
         <div class="ws-card-item">
@@ -108,7 +108,7 @@
             </svg>
           </div>
           <h3>Three-Point Setup</h3>
-          <p>Build a classic key, fill and rim configuration — the foundation of professional portrait and product lighting.</p>
+          <p>Key, fill and rim — the foundation of professional portrait lighting.</p>
         </div>
 
         <div class="ws-card-item">
@@ -120,7 +120,7 @@
             </svg>
           </div>
           <h3>Equipment Operation</h3>
-          <p>Operate fresnel spots, softboxes, octaboxes, parcans and LED panels — understanding each unit's output and character.</p>
+          <p>Fresnels, softboxes, octaboxes, parcans and LED panels — each with unique output.</p>
         </div>
 
         <div class="ws-card-item">
@@ -132,7 +132,7 @@
             </svg>
           </div>
           <h3>Light Quality</h3>
-          <p>Compare hard and soft sources — inverse square falloff, shadow edge sharpness, and softness from modifier size.</p>
+          <p>Hard vs soft sources — falloff, shadow sharpness, and modifier size.</p>
         </div>
 
         <div class="ws-card-item">
@@ -145,7 +145,7 @@
             </svg>
           </div>
           <h3>Contrast Ratio</h3>
-          <p>Control the key-to-fill ratio to dial in mood — from flat, even illumination to dramatic high-contrast looks.</p>
+          <p>Dial the key-to-fill ratio from flat and even to dramatic contrast.</p>
         </div>
 
       </div>
@@ -474,47 +474,80 @@
       </button>
       <div class="acc-strip-content">
         <div class="acc-content-title">Scene Objects</div>
-        <p class="acc-hint">Add shapes to practice lighting on different surfaces.</p>
-        <div class="shape-grid">
-          <button class="shape-btn" data-add-object="sphere" aria-label="Add sphere">
+
+        <div class="fix-card" style="--fc:#7ECAC9;--fc-rgb:126,202,201">
+          <div class="fix-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
               <circle cx="12" cy="12" r="8" fill="currentColor" opacity=".1"/><circle cx="12" cy="12" r="8"/>
               <path d="M4 12 Q12 8 20 12" stroke-width="1.1"/><path d="M4 12 Q12 16 20 12" stroke-width="1.1"/>
             </svg>
-            <span>Sphere</span>
-          </button>
-          <button class="shape-btn" data-add-object="box" aria-label="Add box">
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Sphere</div>
+            <div class="fix-desc">Classic round subject. Studies light wrap and falloff.</div>
+          </div>
+          <button class="fix-add" data-add-object="sphere" aria-label="Add Sphere">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#6EC6F5;--fc-rgb:110,198,245">
+          <div class="fix-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="9" width="12" height="12" fill="currentColor" opacity=".1"/><rect x="4" y="9" width="12" height="12"/>
               <path d="M4 9L8 5L20 5L20 17L16 21M8 5L8 9"/><line x1="20" y1="5" x2="16" y2="9"/>
             </svg>
-            <span>Box</span>
-          </button>
-          <button class="shape-btn" data-add-object="cylinder" aria-label="Add cylinder">
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Box</div>
+            <div class="fix-desc">Flat planes and sharp edges. Shows hard light contrast.</div>
+          </div>
+          <button class="fix-add" data-add-object="box" aria-label="Add Box">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#B69CF5;--fc-rgb:182,156,245">
+          <div class="fix-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
               <ellipse cx="12" cy="6" rx="7" ry="2.5"/>
               <ellipse cx="12" cy="18" rx="7" ry="2.5" fill="currentColor" opacity=".1"/>
               <line x1="5" y1="6" x2="5" y2="18"/><line x1="19" y1="6" x2="19" y2="18"/>
             </svg>
-            <span>Cylinder</span>
-          </button>
-          <button class="shape-btn" data-add-object="cone" aria-label="Add cone">
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Cylinder</div>
+            <div class="fix-desc">Curved sides with flat ends. Mixed light reflections.</div>
+          </div>
+          <button class="fix-add" data-add-object="cylinder" aria-label="Add Cylinder">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#FF9947;--fc-rgb:255,153,71">
+          <div class="fix-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
               <ellipse cx="12" cy="19" rx="7" ry="2" fill="currentColor" opacity=".1"/>
               <ellipse cx="12" cy="19" rx="7" ry="2"/>
               <path d="M5 19L12 4L19 19"/>
             </svg>
-            <span>Cone</span>
-          </button>
-          <button class="shape-btn" data-add-object="torus" aria-label="Add torus">
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Cone</div>
+            <div class="fix-desc">Tapered form. Good for studying specular highlights.</div>
+          </div>
+          <button class="fix-add" data-add-object="cone" aria-label="Add Cone">Add</button>
+        </div>
+
+        <div class="fix-card" style="--fc:#FF6B9D;--fc-rgb:255,107,157">
+          <div class="fix-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
               <ellipse cx="12" cy="14" rx="8" ry="4"/>
               <path d="M4 10 Q4 6 12 6 Q20 6 20 10"/>
               <path d="M4 10 Q4 14 12 18 Q20 14 20 10"/>
             </svg>
-            <span>Torus</span>
-          </button>
+          </div>
+          <div class="fix-info">
+            <div class="fix-name">Torus</div>
+            <div class="fix-desc">Complex curves. Reveals light direction clearly.</div>
+          </div>
+          <button class="fix-add" data-add-object="torus" aria-label="Add Torus">Add</button>
         </div>
+
       </div>
     </div><!-- Strip: objects -->
 
@@ -528,6 +561,9 @@
       </button>
       <div class="acc-strip-content">
         <div class="acc-content-title">Three-Point Setup</div>
+        <div class="guide-task">
+          <p>Try adding a <strong>Fresnel Spot</strong> as your key light at 45° from the subject, a <strong>Softbox</strong> on the opposite side for fill, and a <strong>PAR Can</strong> behind for rim separation.</p>
+        </div>
         <div class="guide-diagram" aria-hidden="true">
           <svg viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="60" cy="52" r="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>

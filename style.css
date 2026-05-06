@@ -138,6 +138,45 @@ html, body {
   color: #fff;
 }
 
+/* ── HUD dark glass override ─────────────────────────────────────── */
+#hud {
+  background: rgba(7, 6, 18, 0.82);
+  border-color: rgba(255,255,255,0.08);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04) inset;
+}
+#hud .hud-label { color: rgba(255,255,255,0.28); }
+#hud .hud-row > span { color: rgba(255,255,255,0.48); }
+#hud .rval { color: rgba(255,255,255,0.55); }
+#hud input[type="range"] { background: rgba(255,255,255,0.08); }
+#hud .slider {
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--pct, 37%),
+    rgba(255,255,255,0.1) var(--pct, 37%),
+    rgba(255,255,255,0.1) 100%
+  );
+}
+#hud .hud-btn {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.5);
+}
+#hud .hud-btn:hover {
+  background: rgba(91,75,232,0.18);
+  border-color: rgba(91,75,232,0.35);
+  color: rgba(255,255,255,0.82);
+}
+#hud .hud-toggle { background: var(--accent); border: none; color: #fff; }
+#hud .hud-toggle:hover { background: var(--accent-hi); }
+#hud .hud-lights-off {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.3);
+}
+
 /* ── Light Panel (left, slides in) ──────────────────────────────── */
 #light-panel {
   position: fixed;
@@ -1168,6 +1207,24 @@ input[type="range"]::-moz-range-thumb {
 .shape-btn:active { transform: translateY(0); }
 
 /* ── Setup guide ──────────────────────────────────────────────────── */
+.guide-task {
+  margin-bottom: 12px;
+  padding: 10px 11px;
+  background: rgba(182,156,245,0.05);
+  border: 1px solid rgba(182,156,245,0.14);
+  border-radius: 8px;
+}
+.guide-task p {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.6;
+  margin: 0;
+}
+.guide-task strong {
+  color: rgba(182,156,245,0.75);
+  font-weight: 600;
+}
+
 .guide-heading {
   font-size: 9.5px;
   font-weight: 700;
