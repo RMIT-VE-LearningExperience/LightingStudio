@@ -14,9 +14,9 @@ app.setCanvasResolution(pc.RESOLUTION_AUTO);
 
 // Enable area lights
 app.scene.lighting.areaLightsEnabled = true;
-app.scene.toneMapping   = pc.TONEMAP_LINEAR;
+app.scene.toneMapping     = pc.TONEMAP_ACES;
 app.scene.gammaCorrection = pc.GAMMA_SRGB;
-app.scene.ambientLight  = new pc.Color(0.30, 0.30, 0.35);
+app.scene.ambientLight    = new pc.Color(0.10, 0.10, 0.13);
 
 // Calibration: maps real lm → visually correct intensity in PlayCanvas
 const PHYS_SCALE = 0.0005;
@@ -77,16 +77,17 @@ function makeEmissiveMat(col, intensity) {
   return m;
 }
 
-const darkMat  = stdMat(0.07, 0.07, 0.07, 0.80, 0.70);
-const silvMat  = stdMat(0.67, 0.67, 0.67, 0.88, 0.82);
-const rubbMat  = stdMat(0.05, 0.05, 0.05, 0.00, 0.05);
-const fabMat   = stdMat(1.00, 1.00, 1.00, 0.00, 0.30);
+const darkMat  = stdMat(0.03, 0.03, 0.03, 0.00, 0.06);  // matte black housing
+const silvMat  = stdMat(0.80, 0.80, 0.80, 0.97, 0.88);  // brushed chrome
+const rubbMat  = stdMat(0.03, 0.03, 0.03, 0.00, 0.02);  // rubber feet
+const fabMat   = stdMat(0.95, 0.95, 0.95, 0.00, 0.05);  // white diffusion fabric
 
 // ─── STUDIO ROOM ──────────────────────────────────────────────────────────────
 
-const floorMat = stdMat(0.38, 0.38, 0.38, 0.0, 0.15);
-const wallMat  = stdMat(0.55, 0.55, 0.55, 0.0, 0.05);
-const ceilMat  = stdMat(0.20, 0.20, 0.20, 0.0, 0.05);
+const floorMat = stdMat(0.46, 0.44, 0.42, 0.0, 0.48);  // polished concrete
+const wallMat  = stdMat(0.90, 0.90, 0.88, 0.0, 0.06);  // studio white
+const ceilMat  = stdMat(0.78, 0.78, 0.76, 0.0, 0.04);  // off-white ceiling
+const cycMat   = stdMat(0.97, 0.97, 0.96, 0.0, 0.10);  // white seamless cyc
 
 function addRoom() {
   function plane(name, mat, px, py, pz, rx, ry, rz, sx, sz) {
@@ -102,14 +103,12 @@ function addRoom() {
     app.root.addChild(e);
   }
   plane('floor',    floorMat,  0, 0,   0,    0,   0, 0, 16, 14);
-  plane('backwall', wallMat,   0, 3.5, -6,  90,   0, 0, 16,  7);
+  plane('backwall', cycMat,    0, 3.5, -6,  90,   0, 0, 16,  7);
   plane('leftwall', wallMat,  -8, 3.5,  0,  90, -90, 0, 14,  7);
   plane('rightwall',wallMat,   8, 3.5,  0,  90,  90, 0, 14,  7);
   plane('ceiling',  ceilMat,   0, 7,    0, 180,   0, 0, 16, 14);
-  plane('cyc',      wallMat,   0, 0.7, -5.7, 45, 0,  0, 16,  2);
-
-  // Cyclorama blend strip (extra angled panel to smooth floor-wall join)
-  plane('cyc2', wallMat, 0, 0.12, -4.85, 20, 0, 0, 16, 1.2);
+  plane('cyc',      cycMat,    0, 0.7, -5.7, 45, 0,  0, 16,  2);
+  plane('cyc2',     cycMat,    0, 0.12, -4.85, 20, 0, 0, 16, 1.2);
 }
 addRoom();
 
@@ -117,8 +116,8 @@ addRoom();
 const fillLight = new pc.Entity('fill');
 fillLight.addComponent('light', {
   type:        'directional',
-  color:       new pc.Color(0.85, 0.88, 1.0),
-  intensity:   1.2,
+  color:       new pc.Color(0.78, 0.84, 1.0),
+  intensity:   0.55,
   castShadows: false,
 });
 fillLight.setLocalEulerAngles(-50, 30, 0);
@@ -165,7 +164,7 @@ function buildFlashHead(col) {
   part('box', g, silvMat, [-0.10, 0, 0], null, [0.22, 0.025, 0.025]);
   part('box', g, silvMat, [ 0.10, 0, 0], null, [0.22, 0.025, 0.025]);
   part('cylinder', g, darkMat, [0, 0, 0.02], [90, 0, 0], [0.13, 0.28, 0.13]);
-  part('cone', g, stdMat(0.75, 0.75, 0.75, 0.92, 0.9),
+  part('cone', g, stdMat(0.90, 0.86, 0.76, 0.99, 0.96),
        [0, 0, 0.14], [-90, 0, 0], [0.32, 0.10, 0.32]);
   part('sphere', g, makeEmissiveMat(col, 4), [0, 0, 0.22], null, [0.084, 0.084, 0.084], 'emissive');
   return g;
@@ -197,7 +196,7 @@ function buildParSpot(col) {
   part('box', g, silvMat, [-0.12, 0, 0], null, [0.26, 0.025, 0.025]);
   part('box', g, silvMat, [ 0.12, 0, 0], null, [0.26, 0.025, 0.025]);
   part('cylinder', g, darkMat, [0, -0.15, 0], null, [0.19, 0.28, 0.19]);
-  part('cone', g, stdMat(0.69, 0.69, 0.69, 0.88, 0.88),
+  part('cone', g, stdMat(0.86, 0.86, 0.86, 0.99, 0.95),
        [0, -0.31, 0], [180, 0, 0], [0.44, 0.20, 0.44]);
   for (let i = 0; i < 4; i++) {
     const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
@@ -246,7 +245,7 @@ function buildLedPanel(col) {
   part('box', g, silvMat, [-0.09, 0, 0], null, [0.20, 0.020, 0.020]);
   part('box', g, silvMat, [ 0.09, 0, 0], null, [0.20, 0.020, 0.020]);
   part('box', g, darkMat, [0, 0, -0.02], null, [0.58, 0.28, 0.042]);
-  const fMat = stdMat(0.53, 0.53, 0.53, 0.9, 0.8);
+  const fMat = stdMat(0.72, 0.72, 0.72, 0.94, 0.86);
   part('box', g, fMat, [0,  0.148, 0], null, [0.60, 0.016, 0.052]);
   part('box', g, fMat, [0, -0.148, 0], null, [0.60, 0.016, 0.052]);
   part('box', g, fMat, [ 0.298, 0, 0], null, [0.016, 0.28, 0.052]);
@@ -517,7 +516,7 @@ const objects = [];
 function addObject(shape) {
   const types = { sphere:'sphere', box:'box', cylinder:'cylinder', cone:'cone', torus:'torus' };
   if (!types[shape]) return;
-  const mat = stdMat(0.75, 0.75, 0.75, 0.05, 0.55);
+  const mat = stdMat(0.68, 0.66, 0.64, 0.0, 0.38);
   const e   = new pc.Entity('obj-' + shape);
   e.addComponent('render', { type: types[shape] });
   e.render.meshInstances[0].material = mat;
