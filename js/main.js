@@ -700,8 +700,6 @@ function deleteObject(entity) {
 let selObj   = null;
 let selLight = null;
 
-const lightPanel  = document.getElementById('light-panel');
-const objectPanel = document.getElementById('object-panel');
 
 function getEntityAABB(entity) {
   const aabb  = new pc.BoundingBox();
@@ -782,57 +780,90 @@ function makeCtrl({ id, label, min, max, step, value, unit = '' }) {
     </div>`;
 }
 
-function buildLightBody(entry) {
+function buildPositionControls(entry) {
+  const p  = entry.props;
+  const gx = entry.group.getLocalPosition().x.toFixed(1);
+  const gz = entry.group.getLocalPosition().z.toFixed(1);
+  return `
+    ${makeCtrl({ id:'lp-pos-x', label:'Left / Right', min:-7, max:7,   step:0.1,  value:gx,                        unit:'m' })}
+    ${makeCtrl({ id:'lp-pos-z', label:'Fore / Back',  min:-6, max:6,   step:0.1,  value:gz,                        unit:'m' })}
+    ${makeCtrl({ id:'lp-height', label:'Height',      min:0.5, max:5,  step:0.05, value:p.poleHeight.toFixed(2),   unit:'m' })}
+    ${makeCtrl({ id:'lp-tilt',   label:'Aim Height',  min:0,   max:3,  step:0.05, value:p.tiltY.toFixed(2),        unit:'m' })}
+    ${makeCtrl({ id:'lp-pan',    label:'Pan',         min:-180, max:180, step:1,  value:(p.panAngle??0).toFixed(0), unit:'°' })}
+  `;
+}
+
+function buildPhysicsControls(entry) {
   const p      = entry.props;
   const def    = EQUIP_DEFS[entry.equipType];
   const isSpot = entry.lightType === 'spot';
   const minT   = def.minTemp ?? 1000, maxT = def.maxTemp ?? 10000;
   const kPct   = ((p.colorTemp - minT) / (maxT - minT) * 100).toFixed(1);
-  const gx     = entry.group.getLocalPosition().x.toFixed(1);
-  const gz     = entry.group.getLocalPosition().z.toFixed(1);
-
-  const kCtrl = `
+  const kCtrl  = `
     <div class="ctrl-block">
       <div class="ctrl-header"><label for="lp-temp">Color Temp</label>
         <span class="ctrl-val" id="lp-temp-val">${p.colorTemp}K</span></div>
       <div class="kelvin-strip"></div>
       <input type="range" class="slider" id="lp-temp" min="${minT}" max="${maxT}" step="100" value="${p.colorTemp}" style="--pct:${kPct}%">
     </div>`;
-
   return `
-    <div class="ctrl-section-label">Position</div>
-    ${makeCtrl({ id:'lp-pos-x', label:'Left / Right', min:-7, max:7,   step:0.1,  value:gx,                      unit:'m' })}
-    ${makeCtrl({ id:'lp-pos-z', label:'Fore / Back',  min:-6, max:6,   step:0.1,  value:gz,                      unit:'m' })}
-    <div class="ctrl-section-label">Light</div>
-    ${makeCtrl({ id:'lp-watts', label:'Power',        min:def.minW, max:def.maxW, step:10, value:p.watts,         unit:'W' })}
+    ${makeCtrl({ id:'lp-watts', label:'Power', min:def.minW, max:def.maxW, step:10, value:p.watts, unit:'W' })}
     ${kCtrl}
-    ${makeCtrl({ id:'lp-height', label:'Height',      min:0.5, max:5,  step:0.05, value:p.poleHeight.toFixed(2), unit:'m' })}
-    ${makeCtrl({ id:'lp-tilt',   label:'Aim Height',  min:0,   max:3,  step:0.05, value:p.tiltY.toFixed(2),      unit:'m' })}
-    ${makeCtrl({ id:'lp-pan',    label:'Pan',         min:-180, max:180, step:1,  value:(p.panAngle??0).toFixed(0), unit:'°' })}
     ${isSpot ? makeCtrl({ id:'lp-beam', label:'Beam Angle', min:def.minBeam??5, max:def.maxBeam??90, step:1, value:p.beamAngle??def.beamAngle??20, unit:'°' }) : ''}
   `;
 }
 
+function openSettingsStrip() {
+  document.querySelectorAll('.acc-strip').forEach(s => {
+    s.classList.remove('acc-open');
+    s.querySelector('.acc-strip-tab').setAttribute('aria-expanded', 'false');
+  });
+  const strip = document.querySelector('.acc-strip[data-tab="settings"]');
+  if (strip) {
+    strip.classList.add('acc-open');
+    strip.querySelector('.acc-strip-tab').setAttribute('aria-expanded', 'true');
+  }
+}
+
 function openLightPanel(entry) {
-  const color = ROLE_COLORS[entry.role] || '#7c6ef5';
-  lightPanel.style.setProperty('--lt-color', color);
+  const color   = ROLE_COLORS[entry.role] || '#7c6ef5';
+  const slEl    = document.getElementById('settings-light');
+  slEl.style.setProperty('--lt-color', color);
   document.getElementById('lp-accent-bar').style.background = color;
   document.getElementById('lp-dot').style.background        = color;
   document.getElementById('lp-dot').style.boxShadow         = `0 0 8px ${color}`;
   document.getElementById('lp-name').textContent            = ROLE_DISPLAY_NAMES[entry.role] || entry.role;
   document.getElementById('lp-role-badge').textContent      = EQUIP_DEFS[entry.equipType].label;
   document.getElementById('lp-desc').textContent            = ROLE_DESCS[entry.role] || '';
-  document.getElementById('lp-body').innerHTML              = buildLightBody(entry);
+  document.getElementById('lp-pos-body').innerHTML          = buildPositionControls(entry);
+  document.getElementById('lp-phys-controls').innerHTML     = buildPhysicsControls(entry);
   wireLightSliders();
   document.getElementById('lp-toggle').textContent = entry.enabled ? 'Turn OFF' : 'Turn ON';
   updatePhysicsReadout(entry);
-  lightPanel.querySelectorAll('.slider').forEach(syncPct);
-  lightPanel.classList.add('lp-open');
+  slEl.querySelectorAll('.slider').forEach(syncPct);
+  document.getElementById('settings-light').classList.remove('hidden');
+  document.getElementById('settings-object').classList.add('hidden');
+  document.getElementById('settings-empty').classList.add('hidden');
+  openSettingsStrip();
 }
 
-function closeLightPanel()  { lightPanel.classList.remove('lp-open'); }
-function openObjectPanel()  { objectPanel.classList.add('op-open'); }
-function closeObjectPanel() { objectPanel.classList.remove('op-open'); }
+function closeLightPanel() {
+  document.getElementById('settings-light').classList.add('hidden');
+  document.getElementById('settings-empty').classList.remove('hidden');
+}
+
+function openObjectPanel() {
+  document.querySelectorAll('#settings-object .slider').forEach(syncPct);
+  document.getElementById('settings-light').classList.add('hidden');
+  document.getElementById('settings-object').classList.remove('hidden');
+  document.getElementById('settings-empty').classList.add('hidden');
+  openSettingsStrip();
+}
+
+function closeObjectPanel() {
+  document.getElementById('settings-object').classList.add('hidden');
+  document.getElementById('settings-empty').classList.remove('hidden');
+}
 
 function wireLightSliders() {
   const bind = (id, apply) => {
@@ -909,7 +940,6 @@ function updatePhysicsReadout(entry) {
 
 function selectObj(entity) {
   clearSelection();
-  hideAccordion();
   selObj = entity;
   const mat = entity.render.meshInstances[0].material;
   mat.emissive.set(0.1, 0.1, 0.1);
@@ -925,7 +955,6 @@ function selectObj(entity) {
 
 function selectLight(entry) {
   clearSelection();
-  hideAccordion();
   selLight = entry;
   const em = findNamed(entry.headEntity, 'emissive');
   if (em) {
@@ -953,7 +982,6 @@ function clearSelection() {
   freeTransformBox?.classList.add('hidden');
   closeLightPanel();
   closeObjectPanel();
-  showAccordion();
 }
 
 function deleteSelected() {
@@ -1240,7 +1268,6 @@ window.addEventListener('keydown', e => {
 
 const TB_PANELS = {
   'tb-views-btn': 'tb-views-panel',
-  'hud-help-btn': 'hud-help-panel',
 };
 
 function closeAllPanels() {
@@ -1264,7 +1291,7 @@ Object.entries(TB_PANELS).forEach(([btnId, panelId]) => {
   });
 });
 document.addEventListener('click', e => {
-  if (!e.target.closest('.tb-panel') && !e.target.closest('.tb-cat-btn') && !e.target.closest('#hud')) closeAllPanels();
+  if (!e.target.closest('.tb-panel') && !e.target.closest('.tb-cat-btn') && !e.target.closest('#hud') && !e.target.closest('#top-corner-btns')) closeAllPanels();
 });
 
 // ─── TOOLBAR ACTIONS ──────────────────────────────────────────────────────────
@@ -1281,8 +1308,6 @@ document.querySelectorAll('[data-view]').forEach(b =>
 
 const accPanel = document.getElementById('acc-panel');
 
-function showAccordion() { accPanel?.classList.remove('acc-hidden'); }
-function hideAccordion() { accPanel?.classList.add('acc-hidden'); }
 
 document.querySelectorAll('.acc-strip-tab').forEach(trigger => {
   trigger.addEventListener('click', () => {
@@ -1335,10 +1360,7 @@ function updateSetupGuide() {
   }
 }
 
-// ─── LIGHT PANEL STATIC BUTTONS ───────────────────────────────────────────────
-
-document.getElementById('lp-close').addEventListener('click', clearSelection);
-document.getElementById('lp-return').addEventListener('click', clearSelection);
+// ─── SETTINGS STRIP STATIC BUTTONS ────────────────────────────────────────────
 
 document.getElementById('lp-toggle').addEventListener('click', () => {
   if (!selLight) return;
@@ -1351,9 +1373,6 @@ document.getElementById('lp-delete').addEventListener('click', () => {
   const id = selLight.id; clearSelection(); removeLight(id);
 });
 
-// ─── OBJECT PANEL ─────────────────────────────────────────────────────────────
-
-document.getElementById('op-close').addEventListener('click', clearSelection);
 document.getElementById('delete-selected').addEventListener('click', deleteSelected);
 
 function bindObjSlider(id, apply) {
@@ -1417,47 +1436,9 @@ document.getElementById('studio-lights-btn').addEventListener('click', () => {
   btn.classList.toggle('hud-lights-off', !envLightsOn);
 });
 
-document.getElementById('screenshot-btn').addEventListener('click', takeScreenshot);
 const expSlider = document.getElementById('exposure');
 fillLight.light.intensity = parseFloat(expSlider.value) * 1.6;
 syncPct(expSlider);
-
-// ─── SCREENSHOT ───────────────────────────────────────────────────────────────
-
-function captureFrame() {
-  freeTransformBox.classList.add('hidden');
-  app.render();
-  const url = canvas.toDataURL('image/png');
-  if (selObj || selLight) freeTransformBox.classList.remove('hidden');
-  return url;
-}
-
-function takeScreenshot() {
-  const dialog = document.getElementById('screenshot-dialog');
-  dialog.classList.remove('hidden');
-  const input = document.getElementById('student-name');
-  input.value = '';
-  requestAnimationFrame(() => input.focus());
-}
-
-document.getElementById('sd-cancel').addEventListener('click', () => {
-  document.getElementById('screenshot-dialog').classList.add('hidden');
-});
-document.getElementById('sd-save').addEventListener('click', () => {
-  const name     = document.getElementById('student-name').value.trim();
-  const url      = captureFrame();
-  const filename = name ? `${name.replace(/\s+/g,'_')}_LightingStudio.png` : `LightingStudio_${Date.now()}.png`;
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  document.getElementById('screenshot-dialog').classList.add('hidden');
-  const sr = document.getElementById('sr-announce');
-  if (sr) sr.textContent = `Screenshot saved as ${filename}`;
-});
-document.getElementById('student-name').addEventListener('keydown', e => {
-  if (e.key === 'Enter')  document.getElementById('sd-save').click();
-  if (e.key === 'Escape') document.getElementById('sd-cancel').click();
-});
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
@@ -1534,6 +1515,32 @@ document.getElementById('btn-enter-studio')?.addEventListener('click', () => {
   const ws = document.getElementById('welcome-screen');
   if (!ws) return;
   ws.classList.add('ws-exit');
-  setTimeout(() => ws.remove(), 420);
+  setTimeout(() => { ws.classList.add('hidden'); ws.classList.remove('ws-exit'); }, 420);
+});
+
+document.getElementById('logo-btn')?.addEventListener('click', () => {
+  const ws = document.getElementById('welcome-screen');
+  if (!ws) return;
+  ws.classList.remove('hidden');
+});
+
+// ─── HELP MODAL ───────────────────────────────────────────────────────────────
+
+const helpModal = document.getElementById('help-modal');
+
+document.getElementById('help-btn')?.addEventListener('click', e => {
+  e.stopPropagation();
+  helpModal.classList.toggle('hidden');
+});
+document.getElementById('help-modal-close')?.addEventListener('click', () => {
+  helpModal.classList.add('hidden');
+});
+helpModal?.addEventListener('click', e => {
+  if (e.target === helpModal) helpModal.classList.add('hidden');
+});
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !helpModal.classList.contains('hidden')) {
+    helpModal.classList.add('hidden');
+  }
 });
 

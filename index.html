@@ -161,24 +161,121 @@
     </div>
   </div>
 
-  <!-- ══ SCREENSHOT DIALOG ═══════════════════════════════════════════ -->
-  <div id="screenshot-dialog" class="dialog-overlay hidden"
-       role="dialog" aria-modal="true" aria-labelledby="sd-title">
-    <div class="dialog-card">
-      <div class="dialog-icon" aria-hidden="true">📸</div>
-      <h2 id="sd-title" class="dialog-title">Save Your Setup</h2>
-      <p class="dialog-desc">Enter your name — it will be used as the filename so you can submit this as part of your assignment.</p>
-      <label for="student-name" class="sr-only">Your full name</label>
-      <input type="text" id="student-name" class="dialog-input"
-             placeholder="Your full name" autocomplete="name" maxlength="60">
-      <div class="dialog-actions">
-        <button id="sd-cancel" class="tut-ghost-btn">Cancel</button>
-        <button id="sd-save"   class="tut-primary-btn">Download Screenshot</button>
+  <!-- ══ HELP MODAL ═════════════════════════════════════════════════ -->
+  <div id="help-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+    <div class="help-modal-card">
+      <div class="help-modal-header">
+        <h2 id="help-modal-title">Help &amp; Guide</h2>
+        <button id="help-modal-close" aria-label="Close help">×</button>
+      </div>
+      <div class="help-modal-body">
+
+        <div class="help-section">
+          <div class="help-section-title">Controls</div>
+          <div class="help-rows">
+            <div class="help-row"><span class="help-key">Drag scene</span><span class="help-desc">Orbit camera</span></div>
+            <div class="help-row"><span class="help-key">Scroll</span><span class="help-desc">Zoom in / out</span></div>
+            <div class="help-row"><span class="help-key">Drag light</span><span class="help-desc">Move on floor</span></div>
+            <div class="help-row"><span class="help-key">Drag ↻</span><span class="help-desc">Rotate</span></div>
+            <div class="help-row"><span class="help-key">Drag corner</span><span class="help-desc">Scale object</span></div>
+            <div class="help-row"><span class="help-key">Del</span><span class="help-desc">Delete selected</span></div>
+            <div class="help-row"><span class="help-key">Esc</span><span class="help-desc">Deselect</span></div>
+          </div>
+        </div>
+
+        <div class="help-section">
+          <div class="help-section-title">Three-Point Setup</div>
+          <div class="guide-task">
+            <p>Try adding a <strong>Fresnel Spot</strong> as your key light at 45° from the subject, a <strong>Softbox</strong> on the opposite side for fill, and a <strong>PAR Can</strong> behind for rim separation.</p>
+          </div>
+          <div class="guide-diagram" aria-hidden="true">
+            <svg viewBox="0 0 120 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="53" r="9" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+              <circle cx="60" cy="10" r="5" fill="rgba(255,107,157,0.12)" stroke="#FF6B9D" stroke-width="1.5" opacity="0.55"/>
+              <text x="51" y="7" font-size="6" fill="#FF6B9D" opacity="0.55" font-family="sans-serif">Rim</text>
+              <line x1="60" y1="15" x2="60" y2="44" stroke="#FF6B9D" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
+              <circle cx="16" cy="84" r="5" fill="rgba(255,209,102,0.12)" stroke="#FFD166" stroke-width="1.5" opacity="0.55"/>
+              <text x="4" y="82" font-size="6" fill="#FFD166" opacity="0.55" font-family="sans-serif">Key</text>
+              <line x1="20" y1="80" x2="52" y2="59" stroke="#FFD166" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
+              <circle cx="104" cy="79" r="5" fill="rgba(110,198,245,0.12)" stroke="#6EC6F5" stroke-width="1.5" opacity="0.55"/>
+              <text x="91" y="77" font-size="6" fill="#6EC6F5" opacity="0.55" font-family="sans-serif">Fill</text>
+              <line x1="100" y1="75" x2="68" y2="57" stroke="#6EC6F5" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
+              <text x="46" y="103" font-size="5" fill="rgba(255,255,255,0.18)" font-family="sans-serif">▼ camera</text>
+            </svg>
+          </div>
+          <div class="guide-checklist" id="guide-checklist">
+            <div class="guide-item" id="guide-key">
+              <span class="guide-dot" style="--gc:#FFD166"></span>
+              <span class="guide-label">Key Light</span>
+              <span class="guide-status" id="guide-key-status">missing</span>
+            </div>
+            <div class="guide-item" id="guide-fill">
+              <span class="guide-dot" style="--gc:#6EC6F5"></span>
+              <span class="guide-label">Fill Light</span>
+              <span class="guide-status" id="guide-fill-status">missing</span>
+            </div>
+            <div class="guide-item" id="guide-rim">
+              <span class="guide-dot" style="--gc:#FF6B9D"></span>
+              <span class="guide-label">Rim Light</span>
+              <span class="guide-status" id="guide-rim-status">missing</span>
+            </div>
+          </div>
+          <div class="guide-ratio" id="guide-ratio-row" style="display:none">
+            <span class="guide-ratio-label">Key : Fill ratio</span>
+            <span class="guide-ratio-val" id="guide-ratio-val">—</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ── Always-visible studio HUD (top-right) ──────────────────── -->
+  <!-- ── Top-right: logo button + help button ───────────────────── -->
+  <div id="top-corner-btns">
+    <button id="logo-btn" aria-label="Light Up — return to home">
+      <svg class="logo-btn-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lb-v" x1="20" y1="1" x2="20" y2="39" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#EDE9FE"/>
+            <stop offset="1" stop-color="#6D28D9" stop-opacity="0.7"/>
+          </linearGradient>
+          <linearGradient id="lb-h" x1="1" y1="20" x2="39" y2="20" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6D28D9" stop-opacity="0.6"/>
+            <stop offset="0.5" stop-color="#EDE9FE"/>
+            <stop offset="1" stop-color="#6D28D9" stop-opacity="0.6"/>
+          </linearGradient>
+          <linearGradient id="lb-d1" x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4B5FD"/>
+            <stop offset="1" stop-color="#7C3AED" stop-opacity="0.5"/>
+          </linearGradient>
+          <linearGradient id="lb-d2" x1="34" y1="6" x2="6" y2="34" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#C4B5FD"/>
+            <stop offset="1" stop-color="#7C3AED" stop-opacity="0.5"/>
+          </linearGradient>
+          <radialGradient id="lb-glow" cx="50%" cy="50%" r="50%">
+            <stop stop-color="#FFFFFF" stop-opacity="1"/>
+            <stop offset="0.5" stop-color="#DDD6FE" stop-opacity="0.6"/>
+            <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path d="M20 1 L22.2 17.8 L20 39 L17.8 17.8 Z" fill="url(#lb-v)"/>
+        <path d="M1 20 L17.8 17.8 L39 20 L17.8 22.2 Z" fill="url(#lb-h)"/>
+        <path d="M7.5 7.5 L17.2 17.2 L8.5 8.5 L18.2 18.8 Z" fill="url(#lb-d1)" opacity="0.7"/>
+        <path d="M32.5 7.5 L22.8 17.2 L31.5 8.5 L21.8 18.8 Z" fill="url(#lb-d2)" opacity="0.7"/>
+        <path d="M7.5 32.5 L17.2 22.8 L8.5 31.5 L18.2 21.2 Z" fill="url(#lb-d1)" opacity="0.7"/>
+        <path d="M32.5 32.5 L22.8 22.8 L31.5 31.5 L21.8 21.2 Z" fill="url(#lb-d2)" opacity="0.7"/>
+        <circle cx="20" cy="20" r="5.5" fill="url(#lb-glow)"/>
+        <circle cx="20" cy="20" r="2.2" fill="white" opacity="0.95"/>
+      </svg>
+    </button>
+    <button id="help-btn" aria-label="Help">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ── Studio HUD ─────────────────────────────────────────────── -->
   <div id="hud" aria-label="Studio controls">
     <div class="hud-label">Studio</div>
     <label class="hud-row">
@@ -202,134 +299,6 @@
         </svg>
         Reset View
       </button>
-    </div>
-    <div class="hud-row hud-row-btn">
-      <button id="hud-help-btn" class="hud-btn" aria-expanded="false" aria-haspopup="dialog">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-        Help
-      </button>
-    </div>
-  </div>
-
-  <!-- ── Light popup panel (left, slides in) ────────────────────── -->
-  <div id="light-panel" role="complementary" aria-label="Light controls">
-    <div id="lp-accent-bar" aria-hidden="true"></div>
-    <div id="lp-header">
-      <div id="lp-title-wrap">
-        <div id="lp-dot" aria-hidden="true"></div>
-        <div>
-          <div id="lp-name">Key Light</div>
-          <div id="lp-role-badge" aria-hidden="true"></div>
-        </div>
-      </div>
-      <div id="lp-header-btns">
-        <button id="lp-return" class="lp-hbtn" aria-label="Return to studio">← Return</button>
-        <button id="lp-close"  class="lp-hbtn lp-hbtn-x" aria-label="Close light panel">×</button>
-      </div>
-    </div>
-    <div id="lp-desc" aria-live="polite"></div>
-    <div id="lp-body" aria-label="Light settings"></div>
-    <div id="lp-physics" aria-label="Physics readout">
-      <div class="phys-heading">Physics</div>
-      <div class="phys-grid">
-        <div class="phys-cell">
-          <span class="phys-lbl">Shadow</span>
-          <span class="phys-val" id="phys-shadow">—</span>
-        </div>
-        <div class="phys-cell">
-          <span class="phys-lbl">Softness</span>
-          <span class="phys-val" id="phys-softness">—</span>
-        </div>
-        <div class="phys-cell">
-          <span class="phys-lbl">Falloff</span>
-          <span class="phys-val" id="phys-falloff">1/r²</span>
-        </div>
-        <div class="phys-cell">
-          <span class="phys-lbl">Key:Fill</span>
-          <span class="phys-val" id="phys-ratio">—</span>
-        </div>
-      </div>
-    </div>
-    <div id="lp-footer">
-      <button id="lp-toggle" class="lp-btn">Turn OFF</button>
-      <button id="lp-delete" class="lp-btn lp-btn-danger">Delete Light</button>
-    </div>
-  </div>
-
-  <!-- ── Object popup panel (top-left, small) ───────────────────── -->
-  <div id="object-panel" role="complementary" aria-label="Object controls">
-    <div id="op-header">
-      <span>Object</span>
-      <button id="op-close" aria-label="Close object panel">×</button>
-    </div>
-    <div id="op-body">
-
-      <details class="op-advanced">
-        <summary class="op-advanced-toggle">Advanced ▾</summary>
-
-        <div class="op-section-label">Position</div>
-        <label class="op-row">
-          <span>Left / Right</span>
-          <div class="op-range">
-            <input type="range" class="slider" id="obj-pos-x" min="-5" max="5" step="0.1" value="0" aria-label="Left right position">
-            <span class="rval" id="obj-pos-x-val">0.0</span>
-          </div>
-        </label>
-        <label class="op-row">
-          <span>Height</span>
-          <div class="op-range">
-            <input type="range" class="slider" id="obj-pos-y" min="0" max="4" step="0.05" value="0.6" aria-label="Height">
-            <span class="rval" id="obj-pos-y-val">0.6</span>
-          </div>
-        </label>
-        <label class="op-row">
-          <span>Fore / Back</span>
-          <div class="op-range">
-            <input type="range" class="slider" id="obj-pos-z" min="-4" max="4" step="0.1" value="0" aria-label="Fore back position">
-            <span class="rval" id="obj-pos-z-val">0.0</span>
-          </div>
-        </label>
-
-        <div class="op-section-label">Transform</div>
-        <label class="op-row">
-          <span>Spin</span>
-          <div class="op-range">
-            <input type="range" class="slider" id="obj-rot-y" min="-180" max="180" step="1" value="0" aria-label="Rotation">
-            <span class="rval" id="obj-rot-y-val">0°</span>
-          </div>
-        </label>
-        <label class="op-row">
-          <span>Size</span>
-          <div class="op-range">
-            <input type="range" class="slider" id="obj-scale" min="0.2" max="3" step="0.05" value="1" aria-label="Size">
-            <span class="rval" id="obj-scale-val">1.0</span>
-          </div>
-        </label>
-      </details>
-
-      <div class="op-section-label">Material</div>
-      <label class="op-row">
-        <span>Color</span>
-        <input type="color" id="obj-color" value="#cccccc" aria-label="Object colour">
-      </label>
-      <label class="op-row">
-        <span>Roughness</span>
-        <div class="op-range">
-          <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
-          <span class="rval" aria-hidden="true">0.50</span>
-        </div>
-      </label>
-      <label class="op-row">
-        <span>Metalness</span>
-        <div class="op-range">
-          <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
-          <span class="rval" aria-hidden="true">0.05</span>
-        </div>
-      </label>
-
-      <button id="delete-selected" class="op-danger">Delete Object</button>
     </div>
   </div>
 
@@ -555,73 +524,163 @@
       </div>
     </div><!-- Strip: objects -->
 
-    <!-- ── Strip 3: Setup Guide ───────────────────────────────────── -->
-    <div class="acc-strip" data-tab="guide" style="--tc:#B69CF5;--tc-rgb:182,156,245">
-      <button class="acc-strip-tab" aria-expanded="false" aria-label="Setup Guide">
-        <span class="acc-strip-label">Guide</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="14" r="3.5" fill="currentColor" opacity=".15"/>
-          <circle cx="12" cy="14" r="3.5"/>
-          <circle cx="4" cy="4" r="2" fill="currentColor" opacity=".35"/>
-          <line x1="5.6" y1="5.8" x2="9.5" y2="11" stroke-width="1.2" stroke-dasharray="2,1.8"/>
-          <circle cx="20" cy="6" r="2" fill="currentColor" opacity=".35"/>
-          <line x1="18.4" y1="7.5" x2="14.5" y2="11" stroke-width="1.2" stroke-dasharray="2,1.8"/>
-          <circle cx="12" cy="3" r="2" fill="currentColor" opacity=".35"/>
-          <line x1="12" y1="5" x2="12" y2="10.5" stroke-width="1.2" stroke-dasharray="2,1.8"/>
+    <!-- ── Strip 3: Settings ──────────────────────────────────────── -->
+    <div class="acc-strip" data-tab="settings" style="--tc:#B69CF5;--tc-rgb:182,156,245">
+      <button class="acc-strip-tab" aria-expanded="false" aria-label="Settings">
+        <span class="acc-strip-label">Settings</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="6" x2="20" y2="6"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="18" x2="20" y2="18"/>
+          <circle cx="8"  cy="6"  r="2.5" fill="rgba(182,156,245,0.25)"/>
+          <circle cx="16" cy="12" r="2.5" fill="rgba(182,156,245,0.25)"/>
+          <circle cx="10" cy="18" r="2.5" fill="rgba(182,156,245,0.25)"/>
         </svg>
       </button>
       <div class="acc-strip-content">
-        <div class="acc-content-title">Three-Point Setup</div>
-        <div class="guide-task">
-          <p>Try adding a <strong>Fresnel Spot</strong> as your key light at 45° from the subject, a <strong>Softbox</strong> on the opposite side for fill, and a <strong>PAR Can</strong> behind for rim separation.</p>
+
+        <!-- Empty state -->
+        <div id="settings-empty">
+          <div class="acc-content-title">Settings</div>
+          <p class="settings-prompt">Select a light or object to see its settings.</p>
         </div>
-        <div class="guide-diagram" aria-hidden="true">
-          <svg viewBox="0 0 120 105" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Subject -->
-            <circle cx="60" cy="53" r="9" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
-            <!-- Rim (behind subject, top-centre) -->
-            <circle cx="60" cy="10" r="5" fill="rgba(255,107,157,0.12)" stroke="#FF6B9D" stroke-width="1.5" opacity="0.55"/>
-            <text x="51" y="7" font-size="6" fill="#FF6B9D" opacity="0.55" font-family="sans-serif">Rim</text>
-            <line x1="60" y1="15" x2="60" y2="44" stroke="#FF6B9D" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
-            <!-- Key (front-left, lower-left) -->
-            <circle cx="16" cy="84" r="5" fill="rgba(255,209,102,0.12)" stroke="#FFD166" stroke-width="1.5" opacity="0.55"/>
-            <text x="4" y="82" font-size="6" fill="#FFD166" opacity="0.55" font-family="sans-serif">Key</text>
-            <line x1="20" y1="80" x2="52" y2="59" stroke="#FFD166" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
-            <!-- Fill (front-right, lower-right) -->
-            <circle cx="104" cy="79" r="5" fill="rgba(110,198,245,0.12)" stroke="#6EC6F5" stroke-width="1.5" opacity="0.55"/>
-            <text x="91" y="77" font-size="6" fill="#6EC6F5" opacity="0.55" font-family="sans-serif">Fill</text>
-            <line x1="100" y1="75" x2="68" y2="57" stroke="#6EC6F5" stroke-width="1" opacity="0.35" stroke-dasharray="3,3"/>
-            <!-- Camera hint -->
-            <text x="46" y="103" font-size="5" fill="rgba(255,255,255,0.18)" font-family="sans-serif">▼ camera</text>
-          </svg>
-        </div>
-        <div class="guide-checklist" id="guide-checklist">
-          <div class="guide-item" id="guide-key">
-            <span class="guide-dot" style="--gc:#FFD166"></span>
-            <span class="guide-label">Key Light</span>
-            <span class="guide-status" id="guide-key-status">missing</span>
+
+        <!-- ── Light settings ──────────────────────────────────────── -->
+        <div id="settings-light" class="hidden">
+          <div id="lp-accent-bar"></div>
+          <div class="settings-sel-header">
+            <div id="lp-dot"></div>
+            <div>
+              <div id="lp-name"></div>
+              <div id="lp-role-badge"></div>
+            </div>
           </div>
-          <div class="guide-item" id="guide-fill">
-            <span class="guide-dot" style="--gc:#6EC6F5"></span>
-            <span class="guide-label">Fill Light</span>
-            <span class="guide-status" id="guide-fill-status">missing</span>
-          </div>
-          <div class="guide-item" id="guide-rim">
-            <span class="guide-dot" style="--gc:#FF6B9D"></span>
-            <span class="guide-label">Rim Light</span>
-            <span class="guide-status" id="guide-rim-status">missing</span>
-          </div>
-        </div>
-        <div class="guide-ratio" id="guide-ratio-row" style="display:none">
-          <span class="guide-ratio-label">Key : Fill ratio</span>
-          <span class="guide-ratio-val" id="guide-ratio-val">—</span>
-        </div>
+          <div id="lp-desc"></div>
+
+          <details class="settings-group" open>
+            <summary class="settings-group-title">Control</summary>
+            <div class="settings-group-body">
+              <button id="lp-toggle" class="s-btn">Turn OFF</button>
+              <button id="lp-delete" class="s-btn s-btn-danger">Delete Light</button>
+            </div>
+          </details>
+
+          <details class="settings-group">
+            <summary class="settings-group-title">Position</summary>
+            <div class="settings-group-body" id="lp-pos-body"><!-- injected by JS --></div>
+          </details>
+
+          <details class="settings-group">
+            <summary class="settings-group-title">Physics</summary>
+            <div class="settings-group-body">
+              <div id="lp-phys-controls"><!-- injected by JS --></div>
+              <div id="lp-physics">
+                <div class="phys-grid">
+                  <div class="phys-cell">
+                    <span class="phys-lbl">Shadow</span>
+                    <span class="phys-val" id="phys-shadow">—</span>
+                  </div>
+                  <div class="phys-cell">
+                    <span class="phys-lbl">Softness</span>
+                    <span class="phys-val" id="phys-softness">—</span>
+                  </div>
+                  <div class="phys-cell">
+                    <span class="phys-lbl">Falloff</span>
+                    <span class="phys-val" id="phys-falloff">1/r²</span>
+                  </div>
+                  <div class="phys-cell">
+                    <span class="phys-lbl">Key:Fill</span>
+                    <span class="phys-val" id="phys-ratio">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div><!-- #settings-light -->
+
+        <!-- ── Object settings ────────────────────────────────────── -->
+        <div id="settings-object" class="hidden">
+          <div class="acc-content-title">Object</div>
+
+          <details class="settings-group" open>
+            <summary class="settings-group-title">Control</summary>
+            <div class="settings-group-body">
+              <button id="delete-selected" class="s-btn s-btn-danger">Delete Object</button>
+            </div>
+          </details>
+
+          <details class="settings-group">
+            <summary class="settings-group-title">Transform</summary>
+            <div class="settings-group-body">
+              <label class="op-row">
+                <span>Left / Right</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-pos-x" min="-5" max="5" step="0.1" value="0" aria-label="Left right position">
+                  <span class="rval" id="obj-pos-x-val">0.0</span>
+                </div>
+              </label>
+              <label class="op-row">
+                <span>Height</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-pos-y" min="0" max="4" step="0.05" value="0.6" aria-label="Height">
+                  <span class="rval" id="obj-pos-y-val">0.6</span>
+                </div>
+              </label>
+              <label class="op-row">
+                <span>Fore / Back</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-pos-z" min="-4" max="4" step="0.1" value="0" aria-label="Fore back position">
+                  <span class="rval" id="obj-pos-z-val">0.0</span>
+                </div>
+              </label>
+              <label class="op-row">
+                <span>Spin</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-rot-y" min="-180" max="180" step="1" value="0" aria-label="Rotation">
+                  <span class="rval" id="obj-rot-y-val">0°</span>
+                </div>
+              </label>
+              <label class="op-row">
+                <span>Size</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-scale" min="0.2" max="3" step="0.05" value="1" aria-label="Size">
+                  <span class="rval" id="obj-scale-val">1.0</span>
+                </div>
+              </label>
+            </div>
+          </details>
+
+          <details class="settings-group">
+            <summary class="settings-group-title">Material</summary>
+            <div class="settings-group-body">
+              <label class="op-row">
+                <span>Color</span>
+                <input type="color" id="obj-color" value="#cccccc" aria-label="Object colour">
+              </label>
+              <label class="op-row">
+                <span>Roughness</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-roughness" min="0" max="1" step="0.01" value="0.5" aria-label="Roughness">
+                  <span class="rval" aria-hidden="true">0.50</span>
+                </div>
+              </label>
+              <label class="op-row">
+                <span>Metalness</span>
+                <div class="op-range">
+                  <input type="range" class="slider" id="obj-metalness" min="0" max="1" step="0.01" value="0.05" aria-label="Metalness">
+                  <span class="rval" aria-hidden="true">0.05</span>
+                </div>
+              </label>
+            </div>
+          </details>
+        </div><!-- #settings-object -->
+
       </div>
-    </div><!-- Strip: guide -->
+    </div><!-- Strip: settings -->
 
   </div><!-- #acc-panel -->
 
-  <!-- ── HUD-anchored floating panels ───────────────────────────── -->
+  <!-- ── HUD-anchored Reset View panel ──────────────────────────── -->
   <div id="tb-views-panel" class="tb-panel hidden" role="dialog" aria-label="Reset camera view">
     <div class="tb-panel-title">Reset View</div>
     <div class="tb-panel-views">
@@ -636,28 +695,6 @@
       </button>
     </div>
   </div>
-
-  <div id="hud-help-panel" class="tb-panel hidden" role="dialog" aria-label="Controls reference">
-    <div class="tb-panel-title">Controls</div>
-    <div class="help-rows">
-      <div class="help-row"><span class="help-key">Drag scene</span><span class="help-desc">Orbit camera</span></div>
-      <div class="help-row"><span class="help-key">Scroll</span><span class="help-desc">Zoom in / out</span></div>
-      <div class="help-row"><span class="help-key">Drag light</span><span class="help-desc">Move on floor</span></div>
-      <div class="help-row"><span class="help-key">Drag ↻</span><span class="help-desc">Rotate</span></div>
-      <div class="help-row"><span class="help-key">Drag corner</span><span class="help-desc">Scale object</span></div>
-      <div class="help-row"><span class="help-key">Del</span><span class="help-desc">Delete selected</span></div>
-      <div class="help-row"><span class="help-key">Esc</span><span class="help-desc">Deselect</span></div>
-    </div>
-  </div>
-
-  <!-- ── Screenshot button (bottom-right) ─────────────────────── -->
-  <button id="screenshot-btn" aria-label="Take screenshot for assignment submission">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-      <circle cx="12" cy="13" r="4"/>
-    </svg>
-    Save Screenshot
-  </button>
 
   <!-- VR button (hidden until device detected) -->
   <button id="vr-btn" aria-label="Enter VR mode" style="display:none">
@@ -683,11 +720,6 @@
         </svg>
       </div>
     </div>
-  </div>
-
-  <!-- ── Hints ──────────────────────────────────────────────────── -->
-  <div id="hints" aria-label="Keyboard shortcuts" role="note">
-    Drag box · Move &nbsp;·&nbsp; Drag corner · Scale &nbsp;·&nbsp; Drag ↻ · Rotate &nbsp;·&nbsp; Esc · Deselect &nbsp;·&nbsp; Del · Delete
   </div>
 
   <script type="module" src="js/main.js"></script>
